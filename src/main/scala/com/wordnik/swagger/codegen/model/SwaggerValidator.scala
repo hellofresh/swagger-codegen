@@ -72,8 +72,9 @@ object SwaggerValidator {
       errors += ValidationError(parent + ":[operation]", "method is required", ERROR)
     if(op.nickname == "")
       errors += ValidationError(parent + ":" + op.method, "nickname is recommended", WARNING)
-    if(op.responseClass == "")
-      errors += ValidationError(parent + ":" + op.method, "responseClass is required", ERROR)
+    //No longer present in Swagger 1.2 and 2.0
+    //if(op.responseClass == "")
+    //  errors += ValidationError(parent + ":" + op.method, "responseClass is required", ERROR)
     for(resp <- op.responseMessages)
       validate(resp, errors, parent)
     for(param <- op.parameters)

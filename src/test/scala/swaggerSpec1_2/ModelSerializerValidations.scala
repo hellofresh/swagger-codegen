@@ -133,7 +133,7 @@ class ApiDescriptionValidationTest extends FlatSpec with Matchers {
       case p: ApiDescription => {
         val errors = new ListBuffer[ValidationError]
         SwaggerValidator.validate(p, errors, "")
-        errors.size should be (3)
+        errors.size should be (2)
       }
       case _ => fail("wrong type returned, should be ApiDescription")
     }
