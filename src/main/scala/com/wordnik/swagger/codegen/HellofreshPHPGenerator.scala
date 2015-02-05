@@ -100,6 +100,7 @@ class HellofreshPHPGenerator extends BasicPHPGenerator {
     "string" -> "string",
     "str" -> "string",
     "int" -> "int",
+    "integer" -> "int",
     "float" -> "float",
     "long" -> "int",
     "double" -> "float",
@@ -154,7 +155,7 @@ class HellofreshPHPGenerator extends BasicPHPGenerator {
 
   // supporting classes
   override def supportingFiles = List(
-    ("Swagger.mustache", destinationDir + File.separator + apiPackage.get,
-     "Swagger.php")
+    ("APIClient.mustache", destinationDir + File.separator + apiPackage.get,"APIClient.php"),
+    ("IAPIClient.mustache", destinationDir + File.separator + apiPackage.get,"IAPIClient.php")
   )
 }

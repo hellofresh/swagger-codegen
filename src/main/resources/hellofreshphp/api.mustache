@@ -12,7 +12,7 @@ class {{classname}}
       *
       * @param APIClient $apiClient
       */
-    function __construct(APIClient $apiClient)
+    function __construct(IAPIClient $apiClient)
     {
         $this->apiClient = $apiClient;
     }
