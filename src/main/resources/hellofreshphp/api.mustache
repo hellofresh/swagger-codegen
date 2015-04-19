@@ -25,7 +25,7 @@ class {{classname}}
       {{/allParams}}
       * @return {{returnType}}
       */
-    public function {{nickname}}({{#allParams}}${{paramName}}{{#optional}}=null{{/optional}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+    public function {{nickname}}({{#allParams}}${{paramName}}{{#optional}}=null{{/optional}}{{#hasMore}}, {{/hasMore}}{{/allParams}}, $inputHeaderParams=null)
     {
         //parse inputs
         $resourcePath = "{{path}}";
@@ -35,6 +35,12 @@ class {{classname}}
         $headerParams = array();
         $headerParams['Accept'] = '{{#produces}}{{mediaType}}{{#hasMore}},{{/hasMore}}{{/produces}}';
         $headerParams['Content-Type'] = '{{#consumes}}{{mediaType}}{{#hasMore}},{{/hasMore}}{{/consumes}}';
+
+        if ($inputHeaderParams != null) {
+            foreach ($inputHeaderParams as $key => $val) {
+                $headerParams[$key] = $val;
+            }
+        }
 
         {{#queryParams}}
         if(${{paramName}} != null) {

@@ -12,13 +12,24 @@ class APIClient implements IAPIClient
     public static $DELETE = "DELETE";
 
     /**
-     * @param string $apiKey your API key
      * @param string $apiServer the address of the API server
+     * @param string $token OAuth token that needs to be used for the Authorization header
      */
-    function __construct($apiKey, $apiServer)
+    function __construct($apiServer,$oauthToken=null)
     {
-        $this->apiKey = $apiKey;
+
         $this->apiServer = $apiServer;
+        $this->setOAuthToken($oauthToken);
+
+    }
+
+    /**
+     * @param string $token OAuth token that needs to be used for the Authorization header
+     * @return mixed|null
+     */
+    function setOAuthToken($token)
+    {
+        $this->oauthToken = $token;
     }
 
     /**
@@ -32,21 +43,10 @@ class APIClient implements IAPIClient
      */
     public function callAPI($resourcePath, $method, $queryParams, $postData, $headerParams)
     {
+        $headers = (is_array($headerParams)?$headerParams:array());
 
-        $headers = array();
-
-        # Allow API key from $headerParams to override default
-        $added_api_key = false;
-        if ($headerParams != null) {
-            foreach ($headerParams as $key => $val) {
-                $headers[] = "$key: $val";
-                if ($key == 'api_key') {
-                    $added_api_key = true;
-                }
-            }
-        }
-        if (!$added_api_key) {
-            $headers[] = "api_key: " . $this->apiKey;
+        if(!isset($headers["Authorization"]) && $this->oauthToken != null){
+            $headers["Authorization"] = "Bearer " . $this->oauthToken;
         }
 
         if (is_object($postData) or is_array($postData)) {
