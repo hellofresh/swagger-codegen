@@ -105,6 +105,7 @@ class HellofreshPHPGenerator extends BasicPHPGenerator {
     "long" -> "int",
     "double" -> "float",
     "Array" -> "array",
+    "ArrayCollection" -> "array",
     "boolean" -> "bool",
     "Date" -> "DateTime"
     )
