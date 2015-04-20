@@ -44,9 +44,15 @@ class APIClient implements IAPIClient
     public function callAPI($resourcePath, $method, $queryParams, $postData, $headerParams)
     {
         $headers = (is_array($headerParams)?$headerParams:array());
+        $headers["Content-Type"] = "application/json";
 
         if(!isset($headers["Authorization"]) && $this->oauthToken != null){
             $headers["Authorization"] = "Bearer " . $this->oauthToken;
+        }
+
+        $curlHeaders = [];
+        foreach($headers as $type => $header){
+            $curlHeaders[] = $type.": " .$header;
         }
 
         if (is_object($postData) or is_array($postData)) {
@@ -56,7 +62,11 @@ class APIClient implements IAPIClient
         $url = $this->apiServer . $resourcePath;
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_TIMEOUT, 5);
+
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+        curl_setopt($curl, CURLOPT_TIMEOUT, 0);
         // return the result on success, rather than just TRUE
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
