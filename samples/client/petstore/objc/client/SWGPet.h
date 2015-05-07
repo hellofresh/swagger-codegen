@@ -1,33 +1,26 @@
 #import <Foundation/Foundation.h>
 #import "SWGObject.h"
-#import "SWGCategory.h"
 #import "SWGTag.h"
+#import "SWGCategory.h"
 
 
+@protocol SWGPet
+@end
+  
 @interface SWGPet : SWGObject
 
-@property(nonatomic) NSNumber* _id;  /* unique identifier for the pet */
 
-@property(nonatomic) SWGCategory* category;  
+@property(nonatomic) NSNumber<Optional>* _id;
 
-@property(nonatomic) NSString* name;  
+@property(nonatomic) SWGCategory<Optional, SWGCategory>* category;
 
-@property(nonatomic) NSArray* photoUrls;  
+@property(nonatomic) NSString* name;
 
-@property(nonatomic) NSArray* tags;  
+@property(nonatomic) NSArray* photoUrls;
 
-@property(nonatomic) NSString* status;  /* pet status in the store [optional]*/
-
-- (id) _id: (NSNumber*) _id
-     category: (SWGCategory*) category
-     name: (NSString*) name
-     photoUrls: (NSArray*) photoUrls
-     tags: (NSArray*) tags
-     status: (NSString*) status;
-
-- (id) initWithValues: (NSDictionary*)dict;
-- (NSDictionary*) asDictionary;
-
+@property(nonatomic) NSArray<Optional, SWGTag>* tags;
+/* pet status in the store [optional]
+ */
+@property(nonatomic) NSString<Optional>* status;
 
 @end
-

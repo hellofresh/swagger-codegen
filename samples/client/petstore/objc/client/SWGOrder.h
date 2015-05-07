@@ -1,29 +1,24 @@
 #import <Foundation/Foundation.h>
 #import "SWGObject.h"
-#import "SWGDate.h"
 
 
+@protocol SWGOrder
+@end
+  
 @interface SWGOrder : SWGObject
 
-@property(nonatomic) NSNumber* _id;  
 
-@property(nonatomic) NSNumber* petId;  
+@property(nonatomic) NSNumber<Optional>* _id;
 
-@property(nonatomic) NSNumber* quantity;  
+@property(nonatomic) NSNumber<Optional>* petId;
 
-@property(nonatomic) NSString* status;  /* Order Status [optional]*/
+@property(nonatomic) NSNumber<Optional>* quantity;
 
-@property(nonatomic) SWGDate* shipDate;  
+@property(nonatomic) NSDate<Optional>* shipDate;
+/* Order Status [optional]
+ */
+@property(nonatomic) NSString<Optional>* status;
 
-- (id) _id: (NSNumber*) _id
-     petId: (NSNumber*) petId
-     quantity: (NSNumber*) quantity
-     status: (NSString*) status
-     shipDate: (SWGDate*) shipDate;
-
-- (id) initWithValues: (NSDictionary*)dict;
-- (NSDictionary*) asDictionary;
-
+@property(nonatomic) NSNumber<Optional>* complete;
 
 @end
-
