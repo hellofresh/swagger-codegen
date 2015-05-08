@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-namespace {{invokerPackage}};
+namespace HelloFresh;
 
 class APIClient {
 
@@ -27,7 +27,7 @@ class APIClient {
 
   /**
    * @param string $host the address of the API server
-   * @param string $headerName a header to pass on requests 
+   * @param string $headerName a header to pass on requests
    */
   function __construct($host, $headerName = null, $headerValue = null) {
     $this->host = $host;
@@ -263,7 +263,7 @@ class APIClient {
         $subClass = $subClass_array[1];
         foreach ($data as $key => $value) {
           $values[] = array($key => self::deserialize($value, $subClass));
-        }        
+        }
       }
       $deserialized = $values;
     } elseif (strcasecmp(substr($class, 0, 6),'array[') == 0) {
