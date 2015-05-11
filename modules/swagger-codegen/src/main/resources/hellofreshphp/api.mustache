@@ -78,9 +78,9 @@ class {{classname}} {
       }{{/bodyParams}}
 
       // for HTTP post (form)
-      $body = $body ?: $formParams;
+      $body = $formParams;
 
-      if (strpos($headerParams['Content-Type'], "application/x-www-form-urlencoded") > -1) {
+      if (!in_array('Content-Type', $headerParams) && $headerParams['Content-Type'] === 'application/x-www-form-urlencoded') {
         $body = http_build_query($body);
       }
 

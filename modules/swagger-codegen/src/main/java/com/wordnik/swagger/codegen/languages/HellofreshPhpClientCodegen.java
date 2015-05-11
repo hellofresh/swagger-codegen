@@ -207,8 +207,6 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
   public String toModelFilename(String name) {
     // should be the same as the model name
     return name.replace("\\","/").replace("ApiModel/","");
-    //LOGGER.info("FILE PATH: "+name);
-    //return toModelName(name);
   }
 
 }

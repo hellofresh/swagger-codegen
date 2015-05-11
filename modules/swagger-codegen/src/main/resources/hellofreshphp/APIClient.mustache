@@ -24,6 +24,8 @@ class APIClient {
   public static $GET = "GET";
   public static $PUT = "PUT";
   public static $DELETE = "DELETE";
+  protected $curl_timeout = 30;
+  protected $user_agent = 'HelloFresh/PhpClient';
 
   /**
    * @param string $host the address of the API server
@@ -84,7 +86,7 @@ class APIClient {
       $headers[] = $this->headerName . ": " . $this->headerValue;
     }
 
-    if (strpos($headers['Content-Type'], "multipart/form-data") < 0 and (is_object($postData) or is_array($postData))) {
+    if (!in_array('Content-Type: multipart/form-data', $headers) and (is_object($postData) or is_array($postData))) {
       $postData = json_encode($this->sanitizeForSerialization($postData));
     }
 
@@ -279,15 +281,20 @@ class APIClient {
       settype($data, $class);
       $deserialized = $data;
     } else {
-      $class = "{{invokerPackage}}\\models\\".$class;
-      $instance = new $class();
-      foreach ($instance::$swaggerTypes as $property => $type) {
-        if (isset($data->$property)) {
-          $original_property_name = $instance::$attributeMap[$property];
-          $instance->$property = self::deserialize($data->$original_property_name, $type);
+      if (class_exists($class)) {
+        $instance = new $class();
+        foreach ($instance::$swaggerTypes as $property => $type) {
+          if (isset($data->$property)) {
+            $original_property_name = $instance::$attributeMap[$property];
+            $instance->$property = self::deserialize($data->$original_property_name, $type);
+          }
+        }
+        $deserialized = $instance;
+      } else {
+        foreach ($instance::$swaggerTypes as $property => $type) {
+          $deserialized[$property] = self::deserialize($data->original_property_name, $type);
         }
       }
-      $deserialized = $instance;
     }
 
     return $deserialized;
