@@ -182,9 +182,10 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     parts.remove(0);
     parts.remove(parts.size()-1);
-    parts.add(0,"PhpClient");
-    parts.add(0,"Api");
-    parts.add(0,"HelloFresh");
+    parts.add(0, "Models");
+    parts.add(0, "PhpClient");
+    parts.add(0, "Api");
+    parts.add(0, "HelloFresh");
 
     String fqcn = "";
     for(String part: parts) {
