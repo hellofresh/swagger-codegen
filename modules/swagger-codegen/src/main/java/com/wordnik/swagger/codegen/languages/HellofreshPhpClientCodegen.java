@@ -71,7 +71,6 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
     typeMapping.put("List", "array");
     typeMapping.put("map", "map");
 
-    LOGGER.warn("##########" + packagePath);
     supportingFiles.add(new SupportingFile("APIClient.mustache", packagePath + "/lib", "APIClient.php"));
     supportingFiles.add(new SupportingFile("APIClientException.mustache", packagePath + "/lib", "APIClientException.php"));
   }
