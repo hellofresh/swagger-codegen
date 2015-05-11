@@ -18,6 +18,7 @@ generated-code/*
 /nbactions.xml
 *.pyc
 __pycache__
+samples/client/hellofresh/*
 samples/server-generator/scalatra/output
 samples/server-generator/node/output/node_modules
 samples/server-generator/scalatra/target
