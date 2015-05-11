@@ -33,7 +33,6 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
   public HellofreshPhpClientCodegen() {
     super();
 
-
     //TODO determine hte package name from host name
     invokerPackage = camelize("HelloFreshPhpClient");
 
@@ -72,10 +71,9 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
     typeMapping.put("List", "array");
     typeMapping.put("map", "map");
 
-    supportingFiles.add(new SupportingFile("composer.mustache", packagePath, "composer.json"));
+    LOGGER.warn("##########" + packagePath);
     supportingFiles.add(new SupportingFile("APIClient.mustache", packagePath + "/lib", "APIClient.php"));
     supportingFiles.add(new SupportingFile("APIClientException.mustache", packagePath + "/lib", "APIClientException.php"));
-    supportingFiles.add(new SupportingFile("require.mustache", packagePath, invokerPackage + ".php"));
   }
 
   @Override
