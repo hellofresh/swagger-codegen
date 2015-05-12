@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.io.File;
 
-public class HellofreshPhpClientCodegen extends DefaultCodegen implements CodegenConfig {
-  Logger LOGGER = LoggerFactory.getLogger(HellofreshPhpClientCodegen.class);
+public class HelloFreshPhpClientCodegen extends DefaultCodegen implements CodegenConfig {
+  Logger LOGGER = LoggerFactory.getLogger(HelloFreshPhpClientCodegen.class);
   protected String invokerPackage = "com.wordnik.client";
   protected String groupId = "com.wordnik";
   protected String artifactId = "swagger-client";
@@ -30,7 +30,7 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
     return "Generates a PHP client library.";
   }
 
-  public HellofreshPhpClientCodegen() {
+  public HelloFreshPhpClientCodegen() {
     super();
 
     //TODO determine hte package name from host name
@@ -38,7 +38,7 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     String packagePath = invokerPackage + "-php";
 
-    modelPackage = packagePath + "/lib/Models";
+    modelPackage = packagePath + "/lib/Entities";
     apiPackage = packagePath + "/lib";
     outputFolder = "generated-code/hellofreshphp";
     modelTemplateFiles.put("model.mustache", ".php");
@@ -71,8 +71,17 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
     typeMapping.put("List", "array");
     typeMapping.put("map", "map");
 
-    supportingFiles.add(new SupportingFile("APIClient.mustache", packagePath + "/lib", "APIClient.php"));
-    supportingFiles.add(new SupportingFile("APIClientException.mustache", packagePath + "/lib", "APIClientException.php"));
+    supportingFiles.add(new SupportingFile("Http/CurlClient.mustache", packagePath + "/lib/Http", "CurlClient.php"));
+    supportingFiles.add(new SupportingFile("Http/GuzzleClient.mustache", packagePath + "/lib/Http", "GuzzleClient.php"));
+    supportingFiles.add(new SupportingFile("Http/HelloFreshCurl.mustache", packagePath + "/lib/Http", "HelloFreshCurl.php"));
+    supportingFiles.add(new SupportingFile("Http/Httpable.mustache", packagePath + "/lib/Http", "Httpable.php"));
+
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshClientException.mustache", packagePath + "/lib/Exception", "HelloFreshClientException.php"));
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshException.mustache", packagePath + "/lib/Exception", "HelloFreshException.php"));
+
+    supportingFiles.add(new SupportingFile("HelloFreshModelResponse.mustache", packagePath + "/lib", "HelloFreshModelResponse.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshRequest.mustache", packagePath + "/lib", "HelloFreshRequest.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshResponse.mustache", packagePath + "/lib", "HelloFreshResponse.php"));
   }
 
   @Override
@@ -84,6 +93,13 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     return codeModel;
 
+  }
+
+  @Override
+  public String toApiName(String name) {
+    if(name.length() == 0)
+      return "Default";
+    return initialCaps(name);
   }
 
   @Override
@@ -179,7 +195,7 @@ public class HellofreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     parts.remove(0);
     parts.remove(parts.size()-1);
-    parts.add(0, "Models");
+    parts.add(0, "Entities");
     parts.add(0, "PhpClient");
     parts.add(0, "Api");
     parts.add(0, "HelloFresh");

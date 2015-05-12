@@ -1,0 +1,27 @@
+<?php namespace HelloFresh\Api\PhpClient;
+
+class HelloFreshResponse {
+
+  protected $request;
+  protected $responseData;
+  protected $rawResponse;
+
+  public function __construct(HelloFreshRequest $request, $responseData, $rawResponse) {
+    $this->request = $request;
+    $this->responseData = $responseData;
+    $this->rawResponse = $rawResponse;
+  }
+
+  public function getRequest() {
+    return $this->request;
+  }
+
+  public function getResponseData() {
+    return $this->responseData;
+  }
+
+  public function getRawResponse() {
+    return $this->rawResponse();
+  }
+
+}

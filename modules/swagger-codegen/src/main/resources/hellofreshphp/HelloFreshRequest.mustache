@@ -1,0 +1,108 @@
+<?php namespace HelloFresh\Api\PhpClient;
+
+use HelloFresh\Api\PhpClient\Http\Httpable;
+use HelloFresh\Api\PhpClient\Http\GuzzleClient;
+use HelloFresh\Api\PhpClient\Http\CurlClient;
+
+class HelloFreshRequest {
+
+  public static $httpClientHandler;
+  public static $baseUrl;
+  public static $accessToken;
+
+  protected $path;
+  protected $method;
+  protected $parameters;
+
+  public function __construct($path, $method = 'GET', $parameters = []) {
+    $this->path = $path;
+    $this->method = $method;
+    $this->parameters = $parameters;
+  }
+
+  public function execute() {
+    $url = $this->getRequestUrl();
+    $parameters = $this->getParameters();
+
+    if ($this->method === 'GET') {
+      $url = self::addParamsToUrl($url, $parameters);
+      $this->parameters = [];
+    }
+
+    $accessToken = self::getAccessToken();
+
+    $connection = self::getHttpClientHandler();
+    $connection->addRequestHeader('User-Agent', 'HelloFresh\\Api\\PhpClient');
+    $connection->addRequestHeader('Accept-Encoding', '*');
+    if ($accessToken) {
+      $connection->addRequestHeader('Authorization', "Bearer $accessToken");
+    }
+
+    $result = $connection->send($url, $this->method, $parameters);
+    $headers = $connection->getResponseHeaders();
+    $httpStatusCode = $connection->getResponseHttpStatusCode();
+
+    $decodedResult = json_decode($result);
+
+    if (is_null($decodedResult)) {
+      $out = [];
+      parse_str($result, $out);
+
+      return new HelloFreshResponse($this, $out, $result);
+    }
+
+    return new HelloFreshResponse($this, $decodedResult, $result);
+  }
+
+  public function getRequestUrl() {
+    return self::$baseUrl . $this->path;
+  }
+
+  public function getParameters() {
+    return $this->parameters;
+  }
+
+  public static function setBaseUrl($url) {
+    static::$baseUrl = $url;
+  }
+
+  public static function getBaseUrl() {
+    return static::$baseUrl;
+  }
+
+  public static function setAccessToken($accessToken) {
+    static::$accessToken = $accessToken;
+  }
+
+  public static function getAccessToken() {
+    return static::$accessToken;
+  }
+
+  public static function addParamsToUrl($url, $params = []) {
+    if (count($params) <= 0) {
+      return $url;
+    }
+
+    if (strpos($url, '?') === false) {
+      return $url . '?' . http_build_query($params, null, '&');
+    }
+
+    list($path, $query_string) = explode('?', $url, 2);
+    parse_str($query_string, $query_array);
+
+    $params = array_merge($params, $query_array);
+    return $path . '?' . http_build_query($params, null, '&');
+  }
+
+  public static function setHttpClientHandler(Httpable $handler) {
+    static::$httpClientHandler = $handler;
+  }
+
+  public static function getHttpClientHandler() {
+    if (static::$httpClientHandler) {
+      return static::$httpClientHandler;
+    }
+    return function_exists('curl_init') ? new CurlClient : new GuzzleClient;
+  }
+
+}
