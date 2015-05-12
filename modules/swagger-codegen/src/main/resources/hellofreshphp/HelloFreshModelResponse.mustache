@@ -27,18 +27,16 @@ class HelloFreshModelResponse extends HelloFreshResponse {
       settype($value, $className);
 
       $data = $value;
-    } else {
-      if (class_exists($className)) {
-        $instance = new $className();
+    } else if (class_exists($className)) {
+      $instance = new $className;
 
-        foreach ($className::$swaggerTypes as $property => $type) {
-          if (isset($data->$property)) {
-            $instance->$property = $this->recursiveAppointance($type, $data->$property);
-          }
+      foreach ($className::$swaggerTypes as $property => $type) {
+        if (isset($data->$property)) {
+          $instance->$property = $this->recursiveAppointance($type, $data->$property);
         }
-
-        $data = $instance;
       }
+
+      $data = $instance;
     }
 
     return $data;
