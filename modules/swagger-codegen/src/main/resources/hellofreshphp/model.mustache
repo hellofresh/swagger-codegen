@@ -1,8 +1,6 @@
 <?php {{#models}}{{#model}}namespace {{namespaceName}};
 
-use ArrayAccess;
-
-class {{classname}} implements ArrayAccess {
+class {{classname}} {
 
   static $swaggerTypes = [
     {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
@@ -23,22 +21,6 @@ class {{classname}} implements ArrayAccess {
   public function __construct(array $data = []) {
     {{#vars}}$this->{{name}} = isset($data['{{name}}']) ? $data['{{name}}'] : null;{{#hasMore}}
     {{/hasMore}}{{/vars}}
-  }
-
-  public function offsetExists($offset) {
-    return isset($this->$offset);
-  }
-
-  public function offsetGet($offset) {
-    return $this->$offset;
-  }
-
-  public function offsetSet($offset, $value) {
-    $this->$offset = $value;
-  }
-
-  public function offsetUnset($offset) {
-    unset($this->$offset);
   }
 
 }
