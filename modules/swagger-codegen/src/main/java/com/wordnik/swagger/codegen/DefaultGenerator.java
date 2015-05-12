@@ -30,10 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class DefaultGenerator extends AbstractGenerator implements Generator {
+  Logger LOGGER = LoggerFactory.getLogger(DefaultGenerator.class);
   protected CodegenConfig config;
   protected ClientOptInput opts = null;
   protected Swagger swagger = null;
@@ -130,6 +134,9 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
           for (String templateName : config.modelTemplateFiles().keySet()) {
             String suffix = config.modelTemplateFiles().get(templateName);
             String filename = config.modelFileFolder() + File.separator + config.toModelFilename(name) + suffix;
+            if (name.endsWith("Collection")) {
+              templateName = "collection.mustache";
+            }
             String template = readTemplate(config.templateDir() + File.separator + templateName);
             Template tmpl = Mustache.compiler()
                     .withLoader(new Mustache.TemplateLoader() {

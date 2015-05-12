@@ -7,10 +7,6 @@ class {{classname}} {
     {{/hasMore}}{{/vars}}
   ];
 
-  static $attributeMap = [
-    {{#vars}}'{{name}}' => '{{baseName}}'{{#hasMore}},
-    {{/hasMore}}{{/vars}}
-  ];
 {{#vars}}{{#description}}
   /**
    * {{{description}}}

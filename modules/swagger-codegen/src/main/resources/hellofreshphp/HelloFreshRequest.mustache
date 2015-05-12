@@ -48,7 +48,7 @@ class HelloFreshRequest {
       $out = [];
       parse_str($result, $out);
 
-      return new HelloFreshErrorResponse($this, $out, $result, $httpStatusCode);
+      throw new HelloFreshRequestException($this, $out, $result, $httpStatusCode);
     }
 
     if ($httpStatusCode >= 200 && $httpStatusCode < 300) {

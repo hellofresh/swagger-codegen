@@ -1,0 +1,20 @@
+<?php {{#models}}{{#model}}namespace {{namespaceName}};
+
+use Illuminate\Support\Collection;
+
+class {{classname}} extends Collection {
+
+  static $swaggerTypes = [
+    {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
+    {{/hasMore}}{{/vars}}
+  ];
+
+  protected $items = [];
+
+  public function __construct(array $data = []) {
+    $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
+  }
+
+}
+{{/model}}
+{{/models}}
