@@ -10,16 +10,24 @@ class {{classname}} {
    * {{{summary}}}
    *
 {{#allParams}}   * @param {{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}
-{{/allParams}}   * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+{{/allParams}}   * @return {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}|HelloFresh\Api\PhpClient\HelloFreshResponse
    */
-   public static function {{nickname}}($options = []) {
+  public static function {{nickname}} ($options = []) {
     $request = new HelloFreshRequest(
       '{{path}}',
       '{{httpMethod}}',
       $options
     );
 
-    return $request->execute();
+    $response = $request->execute();
+
+    if ($response instanceof HelloFreshModelResponse) {
+      {{#returnType}}$response->deserializeData('{{returnType}}');
+
+      {{/returnType}}return $response;
+    } else {
+      return $response;
+    }
   }
   {{/operation}}
 {{newline}}

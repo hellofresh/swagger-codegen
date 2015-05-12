@@ -17,6 +17,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
   protected String groupId = "com.wordnik";
   protected String artifactId = "swagger-client";
   protected String artifactVersion = "1.0.0";
+  protected Map<String, String> testTemplateFiles = new HashMap<String, String>();
 
   public CodegenType getTag() {
     return CodegenType.CLIENT;
@@ -43,6 +44,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     outputFolder = "generated-code/hellofreshphp";
     modelTemplateFiles.put("model.mustache", ".php");
     apiTemplateFiles.put("api.mustache", ".php");
+    testTemplateFiles.put("test.mustache", ".php");
     templateDir = "php";
 
     typeMapping.clear();
@@ -82,6 +84,11 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     supportingFiles.add(new SupportingFile("HelloFreshModelResponse.mustache", packagePath + "/lib", "HelloFreshModelResponse.php"));
     supportingFiles.add(new SupportingFile("HelloFreshRequest.mustache", packagePath + "/lib", "HelloFreshRequest.php"));
     supportingFiles.add(new SupportingFile("HelloFreshResponse.mustache", packagePath + "/lib", "HelloFreshResponse.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshErrorResponse.mustache", packagePath + "/lib", "HelloFreshErrorResponse.php"));
+  }
+
+  public Map<String, String> testTemplateFiles() {
+    return testTemplateFiles;
   }
 
   @Override

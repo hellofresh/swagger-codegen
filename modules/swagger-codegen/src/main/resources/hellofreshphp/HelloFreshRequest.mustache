@@ -48,10 +48,14 @@ class HelloFreshRequest {
       $out = [];
       parse_str($result, $out);
 
-      return new HelloFreshResponse($this, $out, $result);
+      return new HelloFreshErrorResponse($this, $out, $result, $httpStatusCode);
     }
 
-    return new HelloFreshResponse($this, $decodedResult, $result);
+    if ($httpStatusCode >= 200 && $httpStatusCode < 300) {
+      return new HelloFreshModelResponse($this, $decodedResult, $result, $httpStatusCode);
+    } else {
+      return new HelloFreshErrorResponse($this, $decodedResult, $result, $httpStatusCode);
+    }
   }
 
   public function getRequestUrl() {

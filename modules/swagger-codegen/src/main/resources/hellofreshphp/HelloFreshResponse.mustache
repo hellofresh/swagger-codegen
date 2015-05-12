@@ -5,11 +5,13 @@ class HelloFreshResponse {
   protected $request;
   protected $responseData;
   protected $rawResponse;
+  protected $httpStatusCode;
 
-  public function __construct(HelloFreshRequest $request, $responseData, $rawResponse) {
+  public function __construct(HelloFreshRequest $request, $responseData, $rawResponse, $httpStatusCode) {
     $this->request = $request;
     $this->responseData = $responseData;
     $this->rawResponse = $rawResponse;
+    $this->httpStatusCode = $httpStatusCode;
   }
 
   public function getRequest() {
@@ -22,6 +24,10 @@ class HelloFreshResponse {
 
   public function getRawResponse() {
     return $this->rawResponse();
+  }
+
+  public function getHttpStatusCode() {
+    return $this->httpStatusCode;
   }
 
 }
