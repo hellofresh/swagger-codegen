@@ -2,7 +2,35 @@
 
 use DateTime;
 
-class HelloFreshModelResponse extends HelloFreshResponse {
+class HelloFreshModelResponse implements HelloFreshResponse {
+
+  protected $request;
+  protected $responseData;
+  protected $rawResponse;
+  protected $httpStatusCode;
+
+  public function __construct(HelloFreshRequest $request, $responseData, $rawResponse, $httpStatusCode) {
+    $this->request = $request;
+    $this->responseData = $responseData;
+    $this->rawResponse = $rawResponse;
+    $this->httpStatusCode = $httpStatusCode;
+  }
+
+  public function getRequest() {
+    return $this->request;
+  }
+
+  public function getResponseData() {
+    return $this->responseData;
+  }
+
+  public function getRawResponse() {
+    return $this->rawResponse();
+  }
+
+  public function getHttpStatusCode() {
+    return $this->httpStatusCode;
+  }
 
   public function deserializeData($className, $data = null) {
     $data = $this->getResponseData();

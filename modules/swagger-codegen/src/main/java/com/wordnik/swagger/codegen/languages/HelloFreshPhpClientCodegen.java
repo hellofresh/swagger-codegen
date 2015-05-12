@@ -84,7 +84,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     supportingFiles.add(new SupportingFile("HelloFreshModelResponse.mustache", packagePath + "/lib", "HelloFreshModelResponse.php"));
     supportingFiles.add(new SupportingFile("HelloFreshRequest.mustache", packagePath + "/lib", "HelloFreshRequest.php"));
     supportingFiles.add(new SupportingFile("HelloFreshResponse.mustache", packagePath + "/lib", "HelloFreshResponse.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshErrorResponse.mustache", packagePath + "/lib", "HelloFreshErrorResponse.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshRequestException.mustache", packagePath + "/lib", "HelloFreshRequestException.php"));
   }
 
   public Map<String, String> testTemplateFiles() {

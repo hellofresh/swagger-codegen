@@ -54,7 +54,7 @@ class HelloFreshRequest {
     if ($httpStatusCode >= 200 && $httpStatusCode < 300) {
       return new HelloFreshModelResponse($this, $decodedResult, $result, $httpStatusCode);
     } else {
-      return new HelloFreshErrorResponse($this, $decodedResult, $result, $httpStatusCode);
+      throw new HelloFreshRequestException($this, $decodedResult, $result, $httpStatusCode);
     }
   }
 
