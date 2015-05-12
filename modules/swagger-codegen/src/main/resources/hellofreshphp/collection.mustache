@@ -9,7 +9,7 @@ class {{classname}} extends Collection {
     {{/hasMore}}{{/vars}}
   ];
 
-  protected $items = [];
+  public $items = [];
 
   public function __construct(array $data = []) {
     $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
