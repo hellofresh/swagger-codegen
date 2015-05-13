@@ -34,6 +34,8 @@ class HelloFreshRequest {
     $connection = self::getHttpClientHandler();
     $connection->addRequestHeader('User-Agent', 'HelloFresh\\Api\\PhpClient');
     $connection->addRequestHeader('Accept-Encoding', '*');
+    $connection->addRequestHeader('Accept', 'application/json');
+
     if ($accessToken) {
       $connection->addRequestHeader('Authorization', "Bearer $accessToken");
     }
