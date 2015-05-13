@@ -21,13 +21,9 @@ class {{classname}} {
 
     $response = $request->execute();
 
-    if ($response instanceof HelloFreshModelResponse) {
-      {{#returnType}}$response->deserializeData('{{returnType}}');
+    {{#returnType}}$response->deserializeData('{{returnType}}');
 
-      {{/returnType}}return $response;
-    } else {
-      return $response;
-    }
+    {{/returnType}}return $response;
   }
   {{/operation}}
 {{newline}}
