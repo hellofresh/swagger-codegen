@@ -1,8 +1,9 @@
-<?php namespace HelloFresh\Api\PhpClient;
+<?php namespace HelloFresh\Api\PhpClient\Exception;
 
-use Exception;
+use HelloFresh\Api\PhpClient\HelloFreshRequest;
+use HelloFresh\Api\PhpClient\HelloFreshResponse;
 
-class HelloFreshRequestException extends Exception implements HelloFreshResponse {
+class HelloFreshRequestException extends HelloFreshClientException implements HelloFreshResponse {
 
   protected $request;
   protected $responseData;

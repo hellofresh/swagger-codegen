@@ -73,18 +73,19 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     typeMapping.put("List", "array");
     typeMapping.put("map", "map");
 
-    supportingFiles.add(new SupportingFile("Http/CurlClient.mustache", packagePath + "/lib/Http", "CurlClient.php"));
-    supportingFiles.add(new SupportingFile("Http/GuzzleClient.mustache", packagePath + "/lib/Http", "GuzzleClient.php"));
-    supportingFiles.add(new SupportingFile("Http/HelloFreshCurl.mustache", packagePath + "/lib/Http", "HelloFreshCurl.php"));
-    supportingFiles.add(new SupportingFile("Http/Httpable.mustache", packagePath + "/lib/Http", "Httpable.php"));
+    supportingFiles.add(new SupportingFile("Http/CurlClient.php", packagePath + "/lib/Http", "CurlClient.php"));
+    supportingFiles.add(new SupportingFile("Http/GuzzleClient.php", packagePath + "/lib/Http", "GuzzleClient.php"));
+    supportingFiles.add(new SupportingFile("Http/HelloFreshCurl.php", packagePath + "/lib/Http", "HelloFreshCurl.php"));
+    supportingFiles.add(new SupportingFile("Http/Httpable.php", packagePath + "/lib/Http", "Httpable.php"));
 
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshClientException.mustache", packagePath + "/lib/Exception", "HelloFreshClientException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshException.mustache", packagePath + "/lib/Exception", "HelloFreshException.php"));
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshClientException.php", packagePath + "/lib/Exception", "HelloFreshClientException.php"));
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshException.php", packagePath + "/lib/Exception", "HelloFreshException.php"));
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshRequestException.php", packagePath + "/lib/Exception", "HelloFreshRequestException.php"));
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshParameterException.php", packagePath + "/lib/Exception", "HelloFreshParameterException.php"));
 
-    supportingFiles.add(new SupportingFile("HelloFreshModelResponse.mustache", packagePath + "/lib", "HelloFreshModelResponse.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshRequest.mustache", packagePath + "/lib", "HelloFreshRequest.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshResponse.mustache", packagePath + "/lib", "HelloFreshResponse.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshRequestException.mustache", packagePath + "/lib", "HelloFreshRequestException.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshModelResponse.php", packagePath + "/lib", "HelloFreshModelResponse.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshRequest.php", packagePath + "/lib", "HelloFreshRequest.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshResponse.php", packagePath + "/lib", "HelloFreshResponse.php"));
   }
 
   public Map<String, String> testTemplateFiles() {

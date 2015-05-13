@@ -3,6 +3,8 @@
 use HelloFresh\Api\PhpClient\Http\Httpable;
 use HelloFresh\Api\PhpClient\Http\GuzzleClient;
 use HelloFresh\Api\PhpClient\Http\CurlClient;
+use HelloFresh\Api\PhpClient\Exception\HelloFreshRequestException;
+use HelloFresh\Api\PhpClient\Exception\HelloFreshParameterException;
 
 class HelloFreshRequest {
 
@@ -23,6 +25,8 @@ class HelloFreshRequest {
   public function execute() {
     $url = $this->getRequestUrl();
     $parameters = $this->getParameters();
+
+    $url = self::substituteValues($url, $parameters);
 
     if ($this->method === 'GET') {
       $url = self::addParamsToUrl($url, $parameters);
@@ -84,7 +88,7 @@ class HelloFreshRequest {
     return static::$accessToken;
   }
 
-  public static function addParamsToUrl($url, $params = []) {
+  public static function addParamsToUrl($url, &$params = []) {
     if (count($params) <= 0) {
       return $url;
     }
@@ -93,11 +97,28 @@ class HelloFreshRequest {
       return $url . '?' . http_build_query($params, null, '&');
     }
 
-    list($path, $query_string) = explode('?', $url, 2);
-    parse_str($query_string, $query_array);
+    list($path, $queryString) = explode('?', $url, 2);
+    parse_str($queryString, $queryArray);
 
-    $params = array_merge($params, $query_array);
-    return $path . '?' . http_build_query($params, null, '&');
+    $queryParams = array_merge($params, $queryArray);
+    $params = [];
+
+    return $path . '?' . http_build_query($queryParams, null, '&');
+  }
+
+  public static function substituteValues($url, &$params = []) {
+    return preg_replace_callback('/\{(.*?)\}/', function($matches) use (&$params) {
+      $parameter = $matches[1];
+
+      if (!array_key_exists($parameter, $params)) {
+        throw new HelloFreshParameterException("Missing parameter $parameter.");
+      }
+
+      $value = $params[$parameter];
+      unset($params[$parameter]);
+
+      return $value;
+    }, $url);
   }
 
   public static function setHttpClientHandler(Httpable $handler) {

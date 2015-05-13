@@ -2,4 +2,4 @@
 
 use Exception;
 
-class HelloFreshClientException extends Exception {}
+class HelloFreshException extends Exception {}
