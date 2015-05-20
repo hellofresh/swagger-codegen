@@ -15,6 +15,16 @@ class HelloFreshRequestException extends HelloFreshClientException implements He
     $this->responseData = $responseData;
     $this->rawResponse = $rawResponse;
     $this->httpStatusCode = $httpStatusCode;
+
+    try {
+      if (property_exists($responseData, 'error')) {
+        $this->message = $responseData->error_description;
+      } else {
+        $this->message = $responseData->message;
+      }
+    } catch (Exception $e) {
+      $this->message = 'Unable to set response message, check responseData for the API response.';
+    }
   }
 
   public function getRequest() {
