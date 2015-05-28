@@ -4,13 +4,23 @@ use Illuminate\Support\Collection;
 
 class {{classname}} extends Collection {
 
+  /**
+   * @var   array   $swaggerTypes
+   */
   static $swaggerTypes = [
     {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
     {{/hasMore}}{{/vars}}
   ];
 
+  /**
+   * @var   array   $items
+   */
   public $items = [];
 
+  /**
+   * @param array   $data
+   * @return void
+   */
   public function __construct(array $data = []) {
     $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
   }

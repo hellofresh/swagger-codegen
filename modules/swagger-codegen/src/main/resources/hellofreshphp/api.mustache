@@ -9,15 +9,17 @@ class {{classname}} {
    *
    * {{{summary}}}
    *
-{{#allParams}}   * @param {{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}
-{{/allParams}}   * @return {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}|HelloFresh\Api\PhpClient\HelloFreshResponse
-   * @throws HelloFresh\Api\PhpClient\Exception\HelloFreshClientException
+{{#returnType}}   * @param   array[{{returnType}}]   $parameters{{/returnType}}{{^returnType}}   * @param   array   $parameters{{/returnType}}
+   * @param   array   $cacheOptions
+   * @return  {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}|HelloFresh\Api\PhpClient\HelloFreshResponse
+   * @throws  HelloFresh\Api\PhpClient\Exception\HelloFreshClientException
    */
-  public static function {{nickname}}($options = []) {
+  public static function {{nickname}}($parameters = [], $cacheOptions = []) {
     $request = new HelloFreshRequest(
       '{{path}}',
       '{{httpMethod}}',
-      $options
+      $parameters,
+      $cacheOptions
     );
 
     $response = $request->execute();
