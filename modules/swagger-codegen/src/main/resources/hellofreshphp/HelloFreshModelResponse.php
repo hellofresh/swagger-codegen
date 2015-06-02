@@ -2,6 +2,13 @@
 
 use DateTime;
 
+/**
+ * Model response of the API
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class HelloFreshModelResponse implements HelloFreshResponse {
 
   /**

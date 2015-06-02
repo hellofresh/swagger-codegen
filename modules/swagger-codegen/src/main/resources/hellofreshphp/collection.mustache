@@ -1,11 +1,20 @@
 <?php {{#models}}{{#model}}namespace {{namespaceName}};
 
-use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as IlluminateCollection;
 
-class {{classname}} extends Collection {
+/**
+ * Collection of {{classname}}
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
+class {{classname}} extends IlluminateCollection {
 
   /**
-   * @var   array   $swaggerTypes
+   * Array of swaggertypes
+   *
+   * @var array $swaggerTypes
    */
   static $swaggerTypes = [
     {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
@@ -13,12 +22,16 @@ class {{classname}} extends Collection {
   ];
 
   /**
-   * @var   array   $items
+   * Storage of items
+   *
+   * @var array $items
    */
   public $items = [];
 
   /**
-   * @param array   $data
+   * Create {{classname}} entity with array of keys with corresponding values
+   *
+   * @param array $data
    * @return void
    */
   public function __construct(array $data = []) {

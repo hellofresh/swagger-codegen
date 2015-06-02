@@ -1,5 +1,12 @@
 <?php namespace HelloFresh\Api\PhpClient\Http;
 
+/**
+ * Interface for all clients
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 interface Httpable {
 
   /**

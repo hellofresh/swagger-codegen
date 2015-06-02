@@ -9,6 +9,13 @@ use HelloFresh\Api\PhpClient\Exception\HelloFreshParameterException;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Cache\ArrayStore;
 
+/**
+ * Base Request to the HelloFresh API
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class HelloFreshRequest {
 
   const CLIENT_ID = 'HelloFresh\\Api\\PhpClient';

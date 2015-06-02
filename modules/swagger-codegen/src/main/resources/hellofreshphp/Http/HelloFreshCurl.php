@@ -1,5 +1,12 @@
 <?php namespace HelloFresh\Api\PhpClient\Http;
 
+/**
+ * cURL function wrapper
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class HelloFreshCurl {
 
   /**

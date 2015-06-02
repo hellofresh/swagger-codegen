@@ -6,6 +6,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\AdapterException;
 use GuzzleHttp\Exception\RequestException;
 
+/**
+ * Custom Guzzle client
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class GuzzleClient implements Httpable {
 
   /**

@@ -5,6 +5,13 @@ use HelloFresh\Api\PhpClient\Http\HelloFreshCurl;
 
 use CURLFile;
 
+/**
+ * Custom cURL client
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class CurlClient implements Httpable {
 
   const CURL_PROXY_QUIRK_VER = 0x071E00;

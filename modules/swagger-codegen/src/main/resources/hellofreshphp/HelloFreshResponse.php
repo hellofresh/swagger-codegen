@@ -1,5 +1,11 @@
 <?php namespace HelloFresh\Api\PhpClient;
 
+/**
+ * Interface for all Responses
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ */
 interface HelloFreshResponse {
 
   /**

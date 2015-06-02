@@ -1,7 +1,19 @@
 <?php {{#models}}{{#model}}namespace {{namespaceName}};
 
+/**
+ * Entity of {{classname}}
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class {{classname}} {
 
+  /**
+   * Array of swaggertypes
+   *
+   * @var array
+   */
   static $swaggerTypes = [
     {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
     {{/hasMore}}{{/vars}}
@@ -9,11 +21,18 @@ class {{classname}} {
 
 {{#vars}}{{#description}}
   /**
-   * {{{description}}}
+   * Property {{name}}
+   *{{#description}}
+   * {{{description}}}{{/description}}
    * @var {{datatype}}
    */{{/description}}
-  public ${{name}};{{/vars}}
-
+  public ${{name}};
+  {{/vars}}
+  /**
+   * Create {{classname}} entity with array of keys with corresponding values
+   *
+   * @param array $data
+   */
   public function __construct(array $data = []) {
     {{#vars}}$this->{{name}} = isset($data['{{name}}']) ? $data['{{name}}'] : null;{{#hasMore}}
     {{/hasMore}}{{/vars}}

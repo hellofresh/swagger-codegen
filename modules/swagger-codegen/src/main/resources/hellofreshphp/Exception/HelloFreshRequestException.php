@@ -5,6 +5,13 @@ use HelloFresh\Api\PhpClient\HelloFreshResponse;
 
 use Exception;
 
+/**
+ * Failed request exception
+ *
+ * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @package   hellofresh/php-client
+ *
+ */
 class HelloFreshRequestException extends HelloFreshClientException implements HelloFreshResponse {
 
   /**
@@ -42,8 +49,12 @@ class HelloFreshRequestException extends HelloFreshClientException implements He
     // Try to extract message from API error
     try {
       if (property_exists($responseData, 'error')) {
-        $this->message = $responseData->error_description;
-      } else {
+        if (is_string($responseData->error)) { // OAuth package error
+          $this->message = $responseData->error_description;
+        } else { // Raw framework error
+          $this->message = $responseData->error->message;
+        }
+      } else { // Caught framework error
         $this->message = $responseData->message;
       }
     } catch (Exception $e) {
