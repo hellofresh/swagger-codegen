@@ -15,10 +15,13 @@ class {{classname}} {
    * {{{nickname}}}
    *
    * {{{summary}}}
+   * Parameters:
+{{#allParams}}   *    - {{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}
+{{/allParams}}
    *
    * @param   array   $parameters
    * @param   array   $cacheOptions
-   * @return  {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}|HelloFresh\Api\PhpClient\HelloFreshResponse
+   * @return  HelloFresh\Api\PhpClient\HelloFreshResponse
    * @throws  HelloFresh\Api\PhpClient\Exception\HelloFreshClientException
    */
   public static function {{nickname}}($parameters = [], $cacheOptions = []) {
