@@ -15,8 +15,10 @@ class {{classname}} {
    * {{{nickname}}}
    *
    * {{{summary}}}
+   *
    * Parameters:
-{{#allParams}}   *    - {{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}
+   *
+{{#allParams}}   *    - `{{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}`
 {{/allParams}}
    *
    * @param   array   $parameters
