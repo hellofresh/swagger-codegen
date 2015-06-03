@@ -32,6 +32,7 @@ class {{classname}} {
    * Create {{classname}} entity with array of keys with corresponding values
    *
    * @param array $data
+   * @return void
    */
   public function __construct(array $data = []) {
     {{#vars}}$this->{{name}} = isset($data['{{name}}']) ? $data['{{name}}'] : null;{{#hasMore}}
