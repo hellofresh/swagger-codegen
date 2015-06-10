@@ -154,7 +154,22 @@ class CurlClient implements Httpable {
     }
 
     $this->helloFreshCurl->init();
+
+    // ignore unsigned SSL certificates on dev
+    if (preg_match('/dev/', $url) && defined('APPLICATION_ENV') && APPLICATION_ENV === 'dev') {
+      $this->ignoreSSL($options);
+    }
+
     $this->helloFreshCurl->setopt_array($options);
+  }
+
+  /**
+   * @param  array $options
+   * @return void
+   */
+  private function ignoreSSL(&$options) {
+    $options[CURLOPT_SSL_VERIFYHOST] = false;
+    $options[CURLOPT_SSL_VERIFYPEER] = false;
   }
 
   /**
