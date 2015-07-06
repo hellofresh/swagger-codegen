@@ -53,7 +53,7 @@ class {{classname}} implements ArrayableInterface, JsonableInterface
         $entity = [];
 
         foreach (self::$swaggerTypes as $name => $type) {
-            if (starts_with($name, 'HelloFresh\Api\PhpClient') && class_exists($name)) {
+            if (starts_with($name, 'HelloFresh\Api\PhpClient\Entities') && class_exists($name)) {
                 $entity[$name] = $this->$name->toArray();
             } else {
                 $entity[$name] = $this->$name;
@@ -67,12 +67,11 @@ class {{classname}} implements ArrayableInterface, JsonableInterface
      * Convert entity to Json
      *
      * @param  integer $options
-     * @param  integer $depth
      * @return string
      */
-    public function toJson($options = 0, $depth = 512)
+    public function toJson($options = 0)
     {
-        return json_encode($this->toArray(), $options, $depth);
+        return json_encode($this->toArray(), $options);
     }
 }
 {{/model}}
