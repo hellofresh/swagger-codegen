@@ -9,34 +9,36 @@ use Illuminate\Support\Collection as IlluminateCollection;
  * @package   hellofresh/php-client
  *
  */
-class {{classname}} extends IlluminateCollection {
+class {{classname}} extends IlluminateCollection
+{
 
-  /**
-   * Array of swaggertypes
-   *
-   * @var array $swaggerTypes
-   */
-  static $swaggerTypes = [
-    {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
-    {{/hasMore}}{{/vars}}
-  ];
+    /**
+     * Array of swaggertypes
+     *
+     * @var array $swaggerTypes
+     */
+    static $swaggerTypes = [
+        {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
+        {{/hasMore}}{{/vars}}
+    ];
 
-  /**
-   * Storage of items
-   *
-   * @var array $items
-   */
-  public $items = [];
+    /**
+     * Storage of items
+     *
+     * @var array $items
+     */
+    public $items = [];
 
-  /**
-   * Create {{classname}} entity with array of keys with corresponding values
-   *
-   * @param array $data
-   * @return void
-   */
-  public function __construct(array $data = []) {
-    $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
-  }
+    /**
+     * Create {{classname}} entity with array of keys with corresponding values
+     *
+     * @param array $data
+     * @return void
+     */
+    public function __construct(array $data = [])
+    {
+        $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
+    }
 
 }
 {{/model}}

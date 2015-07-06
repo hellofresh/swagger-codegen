@@ -7,4 +7,6 @@
  * @package   hellofresh/php-client
  *
  */
-class HelloFreshParameterException extends HelloFreshClientException {}
+class HelloFreshParameterException extends HelloFreshClientException
+{
+}

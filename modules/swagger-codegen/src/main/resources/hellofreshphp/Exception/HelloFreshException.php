@@ -9,4 +9,6 @@ use Exception;
  * @package   hellofresh/php-client
  *
  */
-class HelloFreshException extends Exception {}
+class HelloFreshException extends Exception
+{
+}

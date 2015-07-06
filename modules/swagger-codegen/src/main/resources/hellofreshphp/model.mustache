@@ -1,5 +1,8 @@
 <?php {{#models}}{{#model}}namespace {{namespaceName}};
 
+use Illuminate\Support\Contracts\ArrayableInterface;
+use Illuminate\Support\Contracts\JsonableInterface;
+
 /**
  * Entity of {{classname}}
  *
@@ -7,38 +10,70 @@
  * @package   hellofresh/php-client
  *
  */
-class {{classname}} {
+class {{classname}} implements ArrayableInterface, JsonableInterface
+{
 
-  /**
-   * Array of swaggertypes
-   *
-   * @var array
-   */
-  static $swaggerTypes = [
-    {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
-    {{/hasMore}}{{/vars}}
-  ];
+    /**
+     * Array of swaggertypes
+     *
+     * @var array
+     */
+    public static $swaggerTypes = [
+        {{#vars}}'{{name}}' => '{{{datatype}}}'{{#hasMore}},
+        {{/hasMore}}{{/vars}}
+    ];
+    {{#vars}}{{#description}}
+    /**
+     * Property {{name}}
+     *{{#description}} {{{description}}}{{/description}}
+     * @var {{datatype}}
+     */{{/description}}
+    public ${{name}};
+    {{/vars}}
+    /**
+     * Create {{classname}} entity with array of keys with corresponding values
+     *
+     * @param array $data
+     * @return void
+     */
+    public function __construct(array $data = [])
+    {
+        foreach ($data as $key => $value) {
+            $this[$key] = $value;
+        }
+    }
 
-{{#vars}}{{#description}}
-  /**
-   * Property {{name}}
-   *{{#description}}
-   * {{{description}}}{{/description}}
-   * @var {{datatype}}
-   */{{/description}}
-  public ${{name}};
-  {{/vars}}
-  /**
-   * Create {{classname}} entity with array of keys with corresponding values
-   *
-   * @param array $data
-   * @return void
-   */
-  public function __construct(array $data = []) {
-    {{#vars}}$this->{{name}} = isset($data['{{name}}']) ? $data['{{name}}'] : null;{{#hasMore}}
-    {{/hasMore}}{{/vars}}
-  }
+    /**
+     * Convert entity to array
+     *
+     * @return array $entity
+     */
+    public function toArray()
+    {
+        $entity = [];
 
+        foreach (self::$swaggerTypes as $name => $type) {
+            if (starts_with($name, 'HelloFresh\Api\PhpClient') && class_exists($name)) {
+                $entity[$name] = $this[$name]->toArray();
+            } else {
+                $entity[$name] = $this[$name];
+            }
+        }
+
+        return $entity;
+    }
+
+    /**
+     * Convert entity to Json
+     *
+     * @param  integer $options
+     * @param  integer $depth
+     * @return string
+     */
+    public function toJson($options = 0, $depth = 512)
+    {
+        return json_encode($this->toArray(), $options, $depth);
+    }
 }
 {{/model}}
 {{/models}}

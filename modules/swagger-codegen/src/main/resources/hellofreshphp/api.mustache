@@ -1,6 +1,5 @@
-<?php namespace HelloFresh\Api\PhpClient;
+{{#operations}}<?php namespace HelloFresh\Api\PhpClient;
 
-{{#operations}}
 /**
  * Short-hand functions to the {{classname}} API
  *
@@ -8,39 +7,38 @@
  * @package   hellofresh/php-client
  *
  */
-class {{classname}} {
+class {{classname}}
+{
 
-  {{#operation}}
-  /**
-   * {{{nickname}}}
-   *
-   * {{{summary}}}
-   *
-   * Parameters:
-   *
-{{#allParams}}   *    - `{{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}`
+{{#operation}}
+    /**
+     * Nickname: {{{nickname}}}
+     *
+     * {{{summary}}}
+     *
+     * Parameters:
+     *
+{{#allParams}}     *    - `{{dataType}} ${{paramName}} {{description}} {{^optional}}(required){{/optional}}{{#optional}}(optional){{/optional}}`
 {{/allParams}}
-   *
-   * @param   array   $parameters
-   * @param   array   $cacheOptions
-   * @return  HelloFresh\Api\PhpClient\HelloFreshResponse
-   * @throws  HelloFresh\Api\PhpClient\Exception\HelloFreshClientException
-   */
-  public static function {{nickname}}($parameters = [], $cacheOptions = []) {
-    $request = new HelloFreshRequest(
-      '{{path}}',
-      '{{httpMethod}}',
-      $parameters,
-      $cacheOptions
-    );
+     *
+     * @param  array $parameters
+     * @param  array $cacheOptions
+     * @return HelloFresh\Api\PhpClient\HelloFreshResponse
+     * @throws HelloFresh\Api\PhpClient\Exception\HelloFreshClientException
+     */
+    public static function {{nickname}}($parameters = [], $cacheOptions = [])
+    {
+        $request = new HelloFreshRequest(
+            '{{path}}',
+            '{{httpMethod}}',
+            $parameters,
+            $cacheOptions
+        );
 
-    $response = $request->execute();
+        $response = $request->execute();
 
-    {{#returnType}}$response->deserializeData('{{returnType}}');
+        {{#returnType}}$response->deserializeData('{{returnType}}');
 
-    {{/returnType}}return $response;
-  }
-  {{/operation}}
-{{newline}}
-{{/operations}}
-}
+        {{/returnType}}return $response;
+    }{{/operation}}
+}{{/operations}}

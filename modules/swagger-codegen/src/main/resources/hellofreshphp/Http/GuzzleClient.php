@@ -13,95 +13,100 @@ use GuzzleHttp\Exception\RequestException;
  * @package   hellofresh/php-client
  *
  */
-class GuzzleClient implements Httpable {
+class GuzzleClient implements Httpable
+{
 
-  /**
-   * @var   array   $requestHeaders
-   */
-  protected $requestHeaders = [];
+    /**
+     * @var   array   $requestHeaders
+     */
+    protected $requestHeaders = [];
 
-  /**
-   * @var   array   $responseHeaders
-   */
-  protected $responseHeaders = [];
+    /**
+     * @var   array   $responseHeaders
+     */
+    protected $responseHeaders = [];
 
-  /**
-   * @var   int     $responseHttpStatusCode
-   */
-  protected $responseHttpStatusCode = 0;
+    /**
+     * @var   int     $responseHttpStatusCode
+     */
+    protected $responseHttpStatusCode = 0;
 
-  /**
-   * @var   GuzzleHttp\Client $guzzleClient
-   */
-  protected static $guzzleClient;
+    /**
+     * @var   GuzzleHttp\Client $guzzleClient
+     */
+    protected static $guzzleClient;
 
-  /**
-   * @param GuzzleHttp\Client $guzzleClient
-   * @return void
-   */
-  public function __construct(Client $guzzleClient = null) {
-    self::$guzzleClient = $guzzleClient ?: new Client;
-  }
-
-  /**
-   * @param string  $key
-   * @param string  $value
-   * @return void
-   */
-  public function addRequestHeader($key, $value) {
-    $this->requestHeaders[$key] = $value;
-  }
-
-  /**
-   * @return  array
-   */
-  public function getResponseHeaders() {
-    return $this->responseHeaders;
-  }
-
-  /**
-   * @return  int
-   */
-  public function getResponseHttpStatusCode() {
-    return $this->responseHttpStatusCode;
-  }
-
-  /**
-   * Send HTTP request with Guzzle
-   * @param   string  $url
-   * @param   string  $method
-   * @param   array   $parameters
-   * @return  mixed
-   */
-  public function send($url, $method = 'GET', $parameters = []) {
-    if (count($parameters)) {
-      $options = [
-        'body' => $parameters,
-      ];
-    } else {
-      $options = [];
+    /**
+     * @param GuzzleHttp\Client $guzzleClient
+     * @return void
+     */
+    public function __construct(Client $guzzleClient = null)
+    {
+        self::$guzzleClient = $guzzleClient ?: new Client;
     }
 
-    $request = self::$guzzleClient->createRequest($method, $url, $options);
-
-    foreach ($this->requestHeaders as $headerName => $headerValue) {
-      $request->setHeader($headerName, $headerValue);
+    /**
+     * @param string  $key
+     * @param string  $value
+     * @return void
+     */
+    public function addRequestHeader($key, $value)
+    {
+        $this->requestHeaders[$key] = $value;
     }
 
-    try {
-      $rawResponse = self::$guzzleClient->send($request);
-    } catch (RequestException $e) {
-      if ($e->getPrevious() instanceof AdapterException) {
-        throw new HelloFreshClientException($e->getMessage(), $e->getCode());
-      }
-
-      $rawResponse = $e->getResponse();
+    /**
+     * @return  array
+     */
+    public function getResponseHeaders()
+    {
+        return $this->responseHeaders;
     }
 
-    $this->responseHttpStatusCode = $rawResponse->getStatusCode();
-    $this->responseHeaders = $rawResponse->getHeaders();
+    /**
+     * @return  int
+     */
+    public function getResponseHttpStatusCode()
+    {
+        return $this->responseHttpStatusCode;
+    }
 
-    return $rawResponse->getBody();
-  }
+    /**
+     * Send HTTP request with Guzzle
+     * @param   string  $url
+     * @param   string  $method
+     * @param   array   $parameters
+     * @return  mixed
+     */
+    public function send($url, $method = 'GET', $parameters = [])
+    {
+        if (count($parameters)) {
+            $options = [
+                'body' => $parameters,
+            ];
+        } else {
+            $options = [];
+        }
 
+        $request = self::$guzzleClient->createRequest($method, $url, $options);
+
+        foreach ($this->requestHeaders as $headerName => $headerValue) {
+            $request->setHeader($headerName, $headerValue);
+        }
+
+        try {
+            $rawResponse = self::$guzzleClient->send($request);
+        } catch (RequestException $e) {
+            if ($e->getPrevious() instanceof AdapterException) {
+                throw new HelloFreshClientException($e->getMessage(), $e->getCode());
+            }
+
+            $rawResponse = $e->getResponse();
+        }
+
+        $this->responseHttpStatusCode = $rawResponse->getStatusCode();
+        $this->responseHeaders = $rawResponse->getHeaders();
+
+        return $rawResponse->getBody();
+    }
 }
