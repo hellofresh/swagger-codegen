@@ -54,9 +54,9 @@ class {{classname}} implements ArrayableInterface, JsonableInterface
 
         foreach (self::$swaggerTypes as $name => $type) {
             if (starts_with($name, 'HelloFresh\Api\PhpClient') && class_exists($name)) {
-                $entity[$name] = $this[$name]->toArray();
+                $entity[$name] = $this->$name->toArray();
             } else {
-                $entity[$name] = $this[$name];
+                $entity[$name] = $this->$name;
             }
         }
 
