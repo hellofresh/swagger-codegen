@@ -19,7 +19,7 @@ use Illuminate\Cache\ArrayStore;
 class HelloFreshRequest
 {
 
-    const CLIENT_ID = 'HelloFresh\\Api\\PhpClient';
+    const CLIENT_ID = 'HelloFreshApiPhpClient';
 
     /**
      * @var   HelloFresh\Api\PhpClient\Http\Httpable $httpClientHandler
