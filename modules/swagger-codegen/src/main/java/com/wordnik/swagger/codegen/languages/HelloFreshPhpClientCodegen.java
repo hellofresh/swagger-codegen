@@ -174,9 +174,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
       name = "_" + name;
     }
 
-    // return the name in underscore style
-    // PhoneNumber => phone_number
-    return underscore(name);
+    return name;
   }
 
   @Override
