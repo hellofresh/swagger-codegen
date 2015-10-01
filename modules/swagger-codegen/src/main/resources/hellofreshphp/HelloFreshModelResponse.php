@@ -33,6 +33,22 @@ class HelloFreshModelResponse implements HelloFreshResponse
     protected $httpStatusCode;
 
     /**
+     * Possible values of type for settype
+     * @link http://php.net/manual/en/function.settype.php
+     */
+    public static $types = [
+        'boolean',
+        'bool',
+        'integer',
+        'int',
+        'float',
+        'string',
+        'array',
+        'object',
+        'null'
+    ];
+
+    /**
      * @param   HelloFresh\Api\PhpClient\HelloFreshRequest $request
      * @param   mixed   $responseData
      * @param   mixed   $rawResponse
@@ -108,7 +124,7 @@ class HelloFreshModelResponse implements HelloFreshResponse
             $data = $values;
         } elseif ($className === 'DateTime') {
             $data = new DateTime($data);
-        } elseif (in_array($className, ['string', 'int', 'float', 'bool'])) {
+        } elseif (in_array($className, static::$types)) {
             $value = (is_object($data) || is_array($data)) ? json_encode($data) : $data;
             settype($value, $className);
 
