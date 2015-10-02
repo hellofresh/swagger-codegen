@@ -42,6 +42,7 @@ class HelloFreshModelResponse implements HelloFreshResponse
         'integer',
         'int',
         'float',
+        'double',
         'string',
         'array',
         'object',
