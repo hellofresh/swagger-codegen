@@ -84,7 +84,7 @@ class HelloFreshModelResponse implements HelloFreshResponse
      */
     public function getRawResponse()
     {
-        return $this->rawResponse();
+        return $this->rawResponse;
     }
 
     /**
