@@ -134,9 +134,7 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
           for (String templateName : config.modelTemplateFiles().keySet()) {
             String suffix = config.modelTemplateFiles().get(templateName);
             String filename = config.modelFileFolder() + File.separator + config.toModelFilename(name) + suffix;
-            if (name.endsWith("Collection")) {
-              templateName = "collection.mustache";
-            }
+            
             String template = readTemplate(config.templateDir() + File.separator + templateName);
             Template tmpl = Mustache.compiler()
                     .withLoader(new Mustache.TemplateLoader() {
