@@ -14,7 +14,7 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
   }
 
   public String getName() {
-    return "python";
+    return "hellofresh-python";
   }
 
   public String getHelp() {
