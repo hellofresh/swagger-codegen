@@ -1,6 +1,7 @@
 package com.wordnik.swagger.codegen.languages;
 
 import com.wordnik.swagger.codegen.*;
+import com.wordnik.swagger.models.*;
 import com.wordnik.swagger.models.properties.*;
 
 import java.io.File;
@@ -14,14 +15,14 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
   }
 
   public String getName() {
-    return "hellofresh-python";
+    return "python";
   }
 
   public String getHelp() {
     return "Generates a Python client library.";
   }
 
-  public PythonClientCodegen() {
+  public HelloFreshPythonClientCodegen() {
     super();
     outputFolder = "generated-code/python";
     modelTemplateFiles.put("model.mustache", ".py");
@@ -63,6 +64,25 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
     supportingFiles.add(new SupportingFile("swagger.mustache", module, "swagger.py"));
     supportingFiles.add(new SupportingFile("__init__.mustache", module, "__init__.py"));
     supportingFiles.add(new SupportingFile("__init__.mustache", modelPackage.replace('.', File.separatorChar), "__init__.py"));
+  }
+
+  @Override
+  public CodegenModel fromModel(String name, Model model) {
+    CodegenModel codeModel = super.fromModel(name, model);
+
+    codeModel.classname = this.toClassName(name);
+    return codeModel;
+
+  }
+
+  public String toClassName(String name) {
+    String[] parts = name.split("\\\\");
+    return parts[(parts.length-1)];
+  }
+
+  @Override
+  public String toModelFilename(String name) {
+    return name.replace("\\","/").replace("ApiModel/","");
   }
 
   @Override
