@@ -24,7 +24,7 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
 
   public HelloFreshPythonClientCodegen() {
     super();
-    outputFolder = "generated-code/python";
+    outputFolder = "generated-code/hellofreshpython";
     modelTemplateFiles.put("model.mustache", ".py");
     apiTemplateFiles.put("api.mustache", ".py");
     templateDir = "python";
@@ -60,7 +60,7 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
         "print", "class", "exec", "in", "raise", "continue", "finally", "is",
         "return", "def", "for", "lambda", "try"));
 
-    supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
+    supportingFiles.add(new SupportingFile("README.mustache", module, "README.md"));
     supportingFiles.add(new SupportingFile("swagger.mustache", module, "swagger.py"));
     supportingFiles.add(new SupportingFile("__init__.mustache", module, "__init__.py"));
     supportingFiles.add(new SupportingFile("__init__.mustache", modelPackage.replace('.', File.separatorChar), "__init__.py"));
@@ -82,7 +82,9 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
 
   @Override
   public String toModelFilename(String name) {
-    return name.replace("\\","/").replace("ApiModel/","");
+    int endIndex = name.lastIndexOf("\\");
+    //return name.replace("\\","/").replace("ApiModel/","");
+    return name.substring(endIndex+1);
   }
 
   @Override
