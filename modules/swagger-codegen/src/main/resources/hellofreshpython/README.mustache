@@ -28,5 +28,9 @@ client = swagger.ApiClient('https://api-v2-staging.hellofresh.com')
 
 # Get an Oauth Token
 auth = AuthApi.AuthApi(client)
-auth.clientLogin(grant_type="client_credentials", client_id="hellofresh-bi", client_secret="client_secret", scope="public")
+auth_object = auth.clientLogin(grant_type="client_credentials", client_id="hellofresh-bi", client_secret="client_secret", scope="public")
+
+# Add token to the API client
+client.setAccessToken(auth_object)
+
 ```
