@@ -51,6 +51,10 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
     typeMapping.put("boolean", "bool");
     typeMapping.put("string", "str");
     typeMapping.put("date", "datetime");
+    typeMapping.put("object", "str");
+    typeMapping.put("DateTime", "datetime");
+    typeMapping.put("Doctrine\\Common\\Collections\\ArrayCollection\\ArrayCollection", "dict");
+
 
     // from https://docs.python.org/release/2.5.4/ref/keywords.html
     reservedWords = new HashSet<String> (
