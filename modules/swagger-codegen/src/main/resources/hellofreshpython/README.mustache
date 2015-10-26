@@ -33,4 +33,11 @@ auth_object = auth.clientLogin(grant_type="client_credentials", client_id="hello
 # Add token to the API client
 client.setAccessToken(auth_object)
 
+# Get Product Families
+productFamilies = ProductfamiliesApi.ProductfamiliesApi(client)
+productFamilies.getProductFamilies(country="us")
+
+# Get Delivery Options
+deliveryOptions = DeliveryoptionsApi.DeliveryoptionsApi(client)
+deliveryOptions.getDeliveryOptions(country="us", family="classic-box", zip="60605")
 ```
