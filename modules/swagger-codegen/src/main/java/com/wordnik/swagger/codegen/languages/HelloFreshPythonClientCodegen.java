@@ -40,6 +40,8 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
     languageSpecificPrimitives.add("bool");
     languageSpecificPrimitives.add("str");
     languageSpecificPrimitives.add("datetime");
+    languageSpecificPrimitives.add("object");
+
 
     typeMapping.clear();
     typeMapping.put("integer", "int");
@@ -51,7 +53,6 @@ public class HelloFreshPythonClientCodegen extends DefaultCodegen implements Cod
     typeMapping.put("boolean", "bool");
     typeMapping.put("string", "str");
     typeMapping.put("date", "datetime");
-    typeMapping.put("object", "str");
     typeMapping.put("DateTime", "datetime");
     typeMapping.put("Doctrine\\Common\\Collections\\ArrayCollection\\ArrayCollection", "dict");
 
