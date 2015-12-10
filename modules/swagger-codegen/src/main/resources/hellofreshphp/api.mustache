@@ -18,6 +18,9 @@ class {{classname}}
      */
     protected $client;
 
+    /**
+     * @param HelloFreshClient
+     */
     public function __construct(HelloFreshClient $client)
     {
         $this->client = $client;
@@ -38,7 +41,7 @@ class {{classname}}
      */
     public function {{nickname}}($parameters = [])
     {
-        if ({{httpMethod}} === HttpInterface::GET) {
+        if ({'{httpMethod}}' === HttpInterface::GET) {
             $options = [
                 'query' => $parameters,
             ];
