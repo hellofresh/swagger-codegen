@@ -180,7 +180,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
   }
 
   public String toVariableName(String name) {
-    char c[] = string.toCharArray();
+    char c[] = name.toCharArray();
     c[0] += 32;
     return new String(c);
   }
