@@ -9,7 +9,7 @@ public class CodegenOperation {
     returnSimpleType, subresourceOperation, isMapContainer, isListContainer,
     hasMore = Boolean.TRUE;
   public String path, operationId, returnType, httpMethod, returnBaseType,
-    returnContainer, summary, notes, baseName, defaultResponse;
+    returnContainer, summary, notes, baseName, defaultResponse, lcHttpMethod;
 
   public List<Map<String, String>> consumes, produces;
   public CodegenParameter bodyParam;

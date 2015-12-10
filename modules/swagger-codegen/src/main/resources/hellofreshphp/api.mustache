@@ -3,6 +3,7 @@
 namespace HelloFresh\HelloFreshClient\Purpose;
 
 use HelloFresh\HelloFreshClient\HelloFreshClient;
+use HelloFresh\HelloFreshClient\Deserializer;
 
 /**
  * Short-hand functions to the {{classname}} API
@@ -45,11 +46,15 @@ class {{classname}}
             $options = [
                 'query' => $parameters,
             ];
+        } else {
+            $options = [
+                'body' => $parameters,
+            ];
         }
 
-        $response = $this->client->{{httpMethod}}('{{path}}', $options);
+        $response = $this->client->{{lcHttpMethod}}('{{path}}', $options);
 
-        {{#returnType}}$response->deserializeData('{{returnType}}');
+        {{#returnType}}Deserializer::deserialize('{{returnType}}', $response);
 
         {{/returnType}}return $response;
     }
