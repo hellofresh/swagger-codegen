@@ -7,7 +7,7 @@ import java.util.*;
 
 public class CodegenModel {
   public String parent;
-  public String name, namespaceName, classname, description, classVarName, modelJson;
+  public String name, namespaceName, classname, description, classVarName, modelJson, variableName;
   public String defaultValue;
   public List<CodegenProperty> vars = new ArrayList<CodegenProperty>();
   public Set<String> imports = new HashSet<String>();
