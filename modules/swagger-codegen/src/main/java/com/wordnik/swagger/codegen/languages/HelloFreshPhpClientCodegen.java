@@ -82,6 +82,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
   public CodegenModel fromModel(String name, Model model) {
     CodegenModel codeModel = super.fromModel(name, model);
 
+    codeModel.variableName = this.toVariableName(name);
     codeModel.classname = this.toClassName(name);
     codeModel.namespaceName = this.toNamespaceName(name);
 
@@ -176,6 +177,12 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
   public String toClassName(String name) {
     String[] parts = name.split("\\\\");
     return parts[(parts.length-1)];
+  }
+
+  public String toVariableName(String name) {
+    char c[] = string.toCharArray();
+    c[0] += 32;
+    return new String(c);
   }
 
   public String toNamespaceName(String name) {
