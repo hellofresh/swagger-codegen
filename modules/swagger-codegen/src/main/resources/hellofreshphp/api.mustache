@@ -41,7 +41,7 @@ class {{classname}}
      */
     public function {{nickname}}($parameters = [])
     {
-        if ({'{httpMethod}}' === HttpInterface::GET) {
+        if ('{{httpMethod}}' === HttpInterface::GET) {
             $options = [
                 'query' => $parameters,
             ];
@@ -53,5 +53,6 @@ class {{classname}}
 
         {{/returnType}}return $response;
     }
+
 {{/operation}}
 }{{/operations}}
