@@ -40,7 +40,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     String packagePath = invokerPackage + "-php";
 
     modelPackage = packagePath + "/lib/Entities";
-    apiPackage = packagePath + "/lib";
+    apiPackage = packagePath + "/lib/Purpose";
     outputFolder = "generated-code/hellofreshphp";
     modelTemplateFiles.put("model.mustache", ".php");
     apiTemplateFiles.put("api.mustache", ".php");
@@ -72,20 +72,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     typeMapping.put("String", "string");
     typeMapping.put("List", "array");
     typeMapping.put("map", "map");
-
-    supportingFiles.add(new SupportingFile("Http/CurlClient.php", packagePath + "/lib/Http", "CurlClient.php"));
-    supportingFiles.add(new SupportingFile("Http/GuzzleClient.php", packagePath + "/lib/Http", "GuzzleClient.php"));
-    supportingFiles.add(new SupportingFile("Http/HelloFreshCurl.php", packagePath + "/lib/Http", "HelloFreshCurl.php"));
-    supportingFiles.add(new SupportingFile("Http/Httpable.php", packagePath + "/lib/Http", "Httpable.php"));
-
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshClientException.php", packagePath + "/lib/Exception", "HelloFreshClientException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshException.php", packagePath + "/lib/Exception", "HelloFreshException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshRequestException.php", packagePath + "/lib/Exception", "HelloFreshRequestException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshParameterException.php", packagePath + "/lib/Exception", "HelloFreshParameterException.php"));
-
-    supportingFiles.add(new SupportingFile("HelloFreshModelResponse.php", packagePath + "/lib", "HelloFreshModelResponse.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshRequest.php", packagePath + "/lib", "HelloFreshRequest.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshResponse.php", packagePath + "/lib", "HelloFreshResponse.php"));
   }
 
   public Map<String, String> testTemplateFiles() {

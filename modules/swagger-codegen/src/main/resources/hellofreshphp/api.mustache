@@ -1,14 +1,27 @@
-{{#operations}}<?php namespace HelloFresh\Api\PhpClient;
+{{#operations}}<?php
+
+namespace HelloFresh\Api\PhpClient;
+
+use HelloFresh\HelloFreshClient\HelloFreshClient;
 
 /**
  * Short-hand functions to the {{classname}} API
  *
- * @author    Pepijn Senders <pepijn.senders@hellofresh.de>
+ * @author    Pepijn Senders <ps@hellofresh.com>
  * @package   hellofresh/php-client
  *
  */
 class {{classname}}
 {
+    /**
+     * @var HelloFreshClient
+     */
+    protected $client;
+
+    public function __construct(HelloFreshClient $client)
+    {
+        $this->client = $client;
+    }
 
 {{#operation}}
     /**
@@ -22,23 +35,20 @@ class {{classname}}
 {{/allParams}}
      *
      * @param  array $parameters
-     * @param  array $cacheOptions
-     * @return HelloFresh\Api\PhpClient\HelloFreshResponse
-     * @throws HelloFresh\Api\PhpClient\Exception\HelloFreshClientException
      */
-    public static function {{nickname}}($parameters = [], $cacheOptions = [])
+    public function {{nickname}}($parameters = [])
     {
-        $request = new HelloFreshRequest(
-            '{{path}}',
-            '{{httpMethod}}',
-            $parameters,
-            $cacheOptions
-        );
+        if ({{httpMethod}} === HttpInterface::GET) {
+            $options = [
+                'query' => $parameters,
+            ];
+        }
 
-        $response = $request->execute();
+        $response = $this->client->{{httpMethod}}('{{path}}', $options);
 
         {{#returnType}}$response->deserializeData('{{returnType}}');
 
         {{/returnType}}return $response;
-    }{{/operation}}
+    }
+{{/operation}}
 }{{/operations}}
