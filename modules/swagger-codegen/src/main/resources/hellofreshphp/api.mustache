@@ -4,7 +4,7 @@ namespace HelloFresh\HelloFreshClient\Purpose;
 
 use HelloFresh\HelloFreshClient\HelloFreshClient;
 use HelloFresh\HelloFreshClient\Deserializer;
-use HelloFresh\BaseClient\PurposeInterface;
+use HelloFresh\BaseClient\AbstractPurpose;
 
 /**
  * Short-hand functions to the {{classname}} API
@@ -13,7 +13,7 @@ use HelloFresh\BaseClient\PurposeInterface;
  * @package   hellofresh/php-client
  *
  */
-class {{classname}} implements PurposeInterface
+class {{classname}} extends AbstractPurpose
 {
     /**
      * @var HelloFreshClient
