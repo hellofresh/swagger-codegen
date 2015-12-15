@@ -2,17 +2,9 @@
 
 namespace {{namespaceName}};
 
-use Illuminate\Support\Contracts\ArrayableInterface;
-use Illuminate\Support\Contracts\JsonableInterface;
+use HelloFresh\BaseClient\ModelInterface;
 
-/**
- * Entity of {{classname}}
- *
- * @author    Pepijn Senders <ps@hellofresh.com>
- * @package   hellofresh/php-client
- *
- */
-class {{classname}} implements ArrayableInterface, JsonableInterface
+class {{classname}} implements ModelInterface
 {
 
     /**
@@ -32,30 +24,16 @@ class {{classname}} implements ArrayableInterface, JsonableInterface
      */{{/description}}
     public ${{name}};
     {{/vars}}
-    /**
-     * Create {{classname}} entity with array of keys with corresponding values
-     *
-     * @param array $data
-     * @return void
-     */
-    public function __construct(array $data = [])
-    {
-        foreach ($data as $key => $value) {
-            $this[$key] = $value;
-        }
-    }
 
     /**
-     * Convert entity to array
-     *
-     * @return array $entity
+     * @return array
      */
     public function toArray()
     {
         $entity = [];
 
         foreach (self::$swaggerTypes as $name => $type) {
-            if (starts_with($name, 'HelloFresh\Api\PhpClient\Entities') && class_exists($name)) {
+            if (starts_with($name, 'HelloFresh\\HelloFreshClient\\Entities') && class_exists($name)) {
                 $entity[$name] = $this->$name->toArray();
             } else {
                 $entity[$name] = $this->$name;
@@ -66,8 +44,6 @@ class {{classname}} implements ArrayableInterface, JsonableInterface
     }
 
     /**
-     * Convert entity to Json
-     *
      * @param  integer $options
      * @return string
      */
