@@ -5,6 +5,9 @@ namespace HelloFresh\HelloFreshClient\Purpose;
 use HelloFresh\HelloFreshClient\HelloFreshClient;
 use HelloFresh\HelloFreshClient\Deserializer;
 use HelloFresh\BaseClient\AbstractPurpose;
+use HelloFresh\BaseClient\HttpInterface;
+use HelloFresh\BaseClient\Auth\Auth;
+use HelloFresh\BaseClient\Auth\AuthProvider;
 
 /**
  * Short-hand functions to the {{classname}} API
@@ -43,6 +46,18 @@ class {{classname}} extends AbstractPurpose
      */
     public function {{nickname}}($parameters = [])
     {
+        $authProvider = $this->client->getAuthProvider();
+        if ($authProvider instanceof AuthProvider) {
+            $auth = $authProvider->getAuth();
+
+            if ($auth instanceof Auth) {
+                array_merge([
+                    'client_id' => $auth->getClientId(),
+                    'client_secret' => $auth->getClientSecret(),
+                ], $parameters);
+            }
+        }
+
         if ('{{httpMethod}}' === HttpInterface::GET) {
             $options = [
                 'query' => $parameters,
@@ -55,9 +70,8 @@ class {{classname}} extends AbstractPurpose
 
         $response = $this->client->{{lcHttpMethod}}('{{path}}', $options);
 
-        {{#returnType}}Deserializer::deserialize('{{returnType}}', $response);
-
-        {{/returnType}}return $response;
+        {{#returnType}}return Deserializer::deserialize('{{returnType}}', $response);{{/returnType}}
+        {{^returnType}}return $response;{{/returnType}}
     }
 
 {{/operation}}
