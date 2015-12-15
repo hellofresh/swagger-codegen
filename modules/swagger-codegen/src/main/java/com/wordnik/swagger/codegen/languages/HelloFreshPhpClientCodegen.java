@@ -45,6 +45,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     modelTemplateFiles.put("model.mustache", ".php");
     apiTemplateFiles.put("api.mustache", ".php");
     supportingFiles.add(new SupportingFile("HelloFreshClient.mustache", packagePath + "/lib", "HelloFreshClient.php"));
+    supportingFiles.add(new SupportingFile("Deserializer.php", packagePath + "/lib", "Deserializer.php"));
     templateDir = "php";
 
     typeMapping.clear();
@@ -195,8 +196,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     parts.remove(0);
     parts.remove(parts.size()-1);
     parts.add(0, "Entities");
-    parts.add(0, "PhpClient");
-    parts.add(0, "Api");
+    parts.add(0, "HelloFreshClient");
     parts.add(0, "HelloFresh");
 
     String fqcn = "";
