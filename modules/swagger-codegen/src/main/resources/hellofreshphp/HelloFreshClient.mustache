@@ -12,4 +12,18 @@ class HelloFreshClient extends Client
 {
     const DEFAULT_BASE_URL = 'https://api-{version}.hellofresh.com';
     const DEFAULT_BASE_VERSION = 'v2';
+
+    protected function handleError(\Exception $e)
+    {
+        if ($e instanceof AccessTokenExpiredException) {
+            $auth = $this->authProvider->getAuth();
+
+            if ($auth instanceof Auth) {
+                $this->auth->renewToken([
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $auth->getRefreshToken(),
+                ]);
+            }
+        }
+    }
 }
