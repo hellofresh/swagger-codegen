@@ -4,12 +4,10 @@ namespace HelloFresh\HelloFreshClient\Purpose;
 
 use HelloFresh\HelloFreshClient\HelloFreshClient;
 use HelloFresh\HelloFreshClient\Deserializer;
-use HelloFresh\BaseClient\AbstractPurpose;
+use HelloFresh\HelloFreshClient\AbstractHelloFreshPurpose;
 use HelloFresh\BaseClient\HttpInterface;
-use HelloFresh\BaseClient\Auth\Auth;
-use HelloFresh\BaseClient\Auth\AuthProvider;
 
-class {{classname}} extends AbstractPurpose
+class {{classname}} extends AbstractHelloFreshPurpose
 {
     /**
      * @var HelloFreshClient
@@ -37,19 +35,9 @@ class {{classname}} extends AbstractPurpose
      *
      * @param  array $parameters
      */
-    public function {{nickname}}($parameters = [])
+    public function {{nickname}}(array $parameters = [])
     {
-        $authProvider = $this->client->getAuthProvider();
-        if ($authProvider instanceof AuthProvider) {
-            $auth = $authProvider->getAuth();
-
-            if ($auth instanceof Auth) {
-                array_merge([
-                    'client_id' => $auth->getClientId(),
-                    'client_secret' => $auth->getClientSecret(),
-                ], $parameters);
-            }
-        }
+        $this->attachClientCredentials($parameters);
 
         if ('{{httpMethod}}' === HttpInterface::GET) {
             $options = [
@@ -63,7 +51,7 @@ class {{classname}} extends AbstractPurpose
 
         $response = $this->client->{{lcHttpMethod}}('{{path}}', $options);
 
-        {{#returnType}}return Deserializer::deserialize('{{returnType}}', $response);{{/returnType}}
+        {{#returnType}}$response->setModel(Deserializer::deserialize('{{returnType}}', $response));{{/returnType}}
         {{^returnType}}return $response;{{/returnType}}
     }
 

@@ -46,6 +46,8 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     apiTemplateFiles.put("api.mustache", ".php");
     supportingFiles.add(new SupportingFile("HelloFreshClient.mustache", packagePath + "/lib", "HelloFreshClient.php"));
     supportingFiles.add(new SupportingFile("Deserializer.php", packagePath + "/lib", "Deserializer.php"));
+    supportingFiles.add(new SupportingFile("AbstractModel.php", packagePath + "/lib", "AbstractModel.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshResponse.php", packagePath + "/lib", "HelloFreshResponse.php"));
     templateDir = "php";
 
     typeMapping.clear();
