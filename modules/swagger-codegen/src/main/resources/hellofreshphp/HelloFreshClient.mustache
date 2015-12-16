@@ -57,37 +57,38 @@ class HelloFreshClient extends Client
     /**
      * @inherit
      */
-    protected function handleException($clientMethod, array $clientArguments, \Exception $e)
-    {
-        if ($e instanceof AccessTokenExpiredException) {
-            $refreshToken = $this->authProvider->getRefreshToken();
+     protected function handleException($clientMethod, array $clientArguments, \Exception $e)
+     {
+         if ($e instanceof AccessTokenExpiredException) {
+             $refreshToken = $this->authProvider->getRefreshToken();
 
-            $this->authProvider->refreshAuth();
+             $this->authProvider->refreshAuth();
 
-            if ($refreshToken) {
-                $response = $this->auth->renewToken([
-                    'grant_type' => 'refresh_token',
-                    'refresh_token' => $refreshToken,
-                ]);
+             if ($refreshToken) {
+                 $response = $this->auth->renewToken([
+                     'grant_type' => 'refresh_token',
+                     'refresh_token' => $refreshToken,
+                     'scope' => 'public,customer',
+                 ]);
 
-                $authModel =  $response->getModel();
+                 $authModel = $response->getModel();
 
-                if ($authModel instanceof Authentication) {
-                    $auth = new Auth(
-                        $authModel->token_type,
-                        new AccessToken($authModel->access_token, $authModel->expires_in)
-                    );
+                 if ($authModel instanceof Authentication) {
+                     $auth = new Auth(
+                         $authModel->token_type,
+                         new AccessToken($authModel->access_token, $authModel->expires_in)
+                     );
 
-                    $this->authProvider->refreshAuth(
-                        $auth,
-                        $authResponse->refresh_token
-                    );
+                     $this->authProvider->refreshAuth(
+                         $auth,
+                         $authModel->refresh_token
+                     );
 
-                    return $this->execute($clientMethod, $clientArguments);
-                }
-            }
-        }
+                     return $this->handleClientMethod($clientMethod, $clientArguments);
+                 }
+             }
+         }
 
-        return parent::handleException($clientMethod, $clientArguments, $e);
-    }
+         return parent::handleException($clientMethod, $clientArguments, $e);
+     }
 }
