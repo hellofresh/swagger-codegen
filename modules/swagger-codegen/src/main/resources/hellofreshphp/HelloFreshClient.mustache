@@ -4,9 +4,36 @@ namespace HelloFresh\HelloFreshClient;
 
 use HelloFresh\BaseClient\Client;
 use HelloFresh\HelloFreshClient\Purpose;
+use GuzzleHttp\Message\ResponseInterface;
 
-/**{{#apiInfo}}{{#apis}}{{#operations}}
- * @property-read Purpose\{{classname}} ${{classVarName}}{{/operations}}{{/apis}}{{/apiInfo}}
+/**
+ * @property-read Purpose\Allergens $allergens
+ * @property-read Purpose\Products $products
+ * @property-read Purpose\Recipients $recipients
+ * @property-read Purpose\Subscriptions $subscriptions
+ * @property-read Purpose\Customersidreferrals $customersidreferrals
+ * @property-read Purpose\Nutritions $nutritions
+ * @property-read Purpose\Ratings $ratings
+ * @property-read Purpose\Addresses $addresses
+ * @property-read Purpose\Presets $presets
+ * @property-read Purpose\Cuisines $cuisines
+ * @property-read Purpose\Jobs $jobs
+ * @property-read Purpose\Test $test
+ * @property-read Purpose\Auth $auth
+ * @property-read Purpose\Configurations $configurations
+ * @property-read Purpose\Tags $tags
+ * @property-read Purpose\Shops $shops
+ * @property-read Purpose\Ingredients $ingredients
+ * @property-read Purpose\Freebies $freebies
+ * @property-read Purpose\Ingredientfamilies $ingredientfamilies
+ * @property-read Purpose\Utensils $utensils
+ * @property-read Purpose\Deliveryoptions $deliveryoptions
+ * @property-read Purpose\Customers $customers
+ * @property-read Purpose\Productfamilies $productfamilies
+ * @property-read Purpose\Menus $menus
+ * @property-read Purpose\Recipes $recipes
+ * @property-read Purpose\Clubs $clubs
+ * @property-read Purpose\Favorites $favorites
  */
 class HelloFreshClient extends Client
 {
@@ -14,11 +41,18 @@ class HelloFreshClient extends Client
     const DEFAULT_BASE_VERSION = 'v2';
 
     /**
-     * @param  string $name
-     * @param  array  $arguments
-     * @param  \Exception $e
+     * @param  ResponseInterface $response
+     * @return HelloFreshResponse
      */
-    protected function handleError($name, array $arguments = [], \Exception $e)
+    protected function decorateResponse(ResponseInterface $response)
+    {
+        return new HelloFreshResponse($response);
+    }
+
+    /**
+     * @inherit
+     */
+    protected function handleError($clientMethod, array $clientArguments, \Exception $e)
     {
         if ($e instanceof AccessTokenExpiredException) {
             $auth = $this->authProvider->getAuth();
@@ -39,8 +73,10 @@ class HelloFreshClient extends Client
                     )
                 );
 
-                return $this->execute($name, $arguments);
+                return $this->execute($clientMethod, $clientArguments);
             }
+        } else {
+            parent::handleError($clientMethod, $clientArguments, $e);
         }
     }
 }
