@@ -15,6 +15,10 @@ abstract class AbstractHelloFreshPurpose extends AbstractPurpose
      */
     public function attachClientCredentials(array &$parameters)
     {
+        if (!ends_with(get_class($this), 'Auth')) {
+            return;
+        }
+
         $authProvider = $this->client->getAuthProvider();
 
         if ($authProvider instanceof AuthProviderInterface) {

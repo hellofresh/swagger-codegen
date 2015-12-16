@@ -52,7 +52,8 @@ class {{classname}} extends AbstractHelloFreshPurpose
         $response = $this->client->{{lcHttpMethod}}('{{path}}', $options);
         {{#returnType}}
         $response->setModel(Deserializer::deserialize('{{returnType}}', $response));
-        {{/returnType}}return $response;
+        {{/returnType}}
+        return $response;
     }
 
 {{/operation}}

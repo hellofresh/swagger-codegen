@@ -4,7 +4,10 @@ namespace HelloFresh\HelloFreshClient;
 
 use HelloFresh\BaseClient\Client;
 use HelloFresh\HelloFreshClient\Purpose;
+use HelloFresh\HelloFreshClient\Entities\Authentication\Authentication;
 use GuzzleHttp\Message\ResponseInterface;
+use HelloFresh\BaseClient\Auth\Auth;
+use HelloFresh\BaseClient\Exception\AccessTokenExpiredException;
 
 /**
  * @property-read Purpose\Allergens $allergens
@@ -40,6 +43,8 @@ class HelloFreshClient extends Client
     const DEFAULT_BASE_URL = 'https://api-{version}.hellofresh.com';
     const DEFAULT_BASE_VERSION = 'v2';
 
+    const DEFAULT_USER_AGENT = 'HelloFreshClient';
+
     /**
      * @param  ResponseInterface $response
      * @return HelloFreshResponse
@@ -52,31 +57,37 @@ class HelloFreshClient extends Client
     /**
      * @inherit
      */
-    protected function handleError($clientMethod, array $clientArguments, \Exception $e)
+    protected function handleException($clientMethod, array $clientArguments, \Exception $e)
     {
         if ($e instanceof AccessTokenExpiredException) {
-            $auth = $this->authProvider->getAuth();
+            $refreshToken = $this->authProvider->getRefreshToken();
 
-            if ($auth instanceof Auth) {
-                $authResponse = $this->auth->renewToken([
+            $this->authProvider->refreshAuth();
+
+            if ($refreshToken) {
+                $response = $this->auth->renewToken([
                     'grant_type' => 'refresh_token',
-                    'refresh_token' => $auth->getRefreshToken(),
+                    'refresh_token' => $refreshToken,
                 ]);
 
-                $this->authProvider->refreshAuth(
-                    new Auth(
-                        $authResponse->token_type,
-                        $authResponse->access_token,
-                        $authResponse->refresh_token,
-                        $auth->getClientId(),
-                        $auth->getClientSecret()
-                    )
-                );
+                $authModel =  $response->getModel();
 
-                return $this->execute($clientMethod, $clientArguments);
+                if ($authModel instanceof Authentication) {
+                    $auth = new Auth(
+                        $authModel->token_type,
+                        new AccessToken($authModel->access_token, $authModel->expires_in)
+                    );
+
+                    $this->authProvider->refreshAuth(
+                        $auth,
+                        $authResponse->refresh_token
+                    );
+
+                    return $this->execute($clientMethod, $clientArguments);
+                }
             }
-        } else {
-            parent::handleError($clientMethod, $clientArguments, $e);
         }
+
+        return parent::handleException($clientMethod, $clientArguments, $e);
     }
 }
