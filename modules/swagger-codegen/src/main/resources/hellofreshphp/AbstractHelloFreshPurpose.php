@@ -2,7 +2,7 @@
 
 namespace HelloFresh\HelloFreshClient;
 
-use HelloFresh\HelloFreshClient\AbstractPurpose;
+use HelloFresh\BaseClient\AbstractPurpose;
 
 abstract class AbstractHelloFreshPurpose extends AbstractPurpose
 {
