@@ -2,7 +2,7 @@
 
 namespace HelloFresh\HelloFreshClient;
 
-abstract class AbstractModel
+abstract class AbstractModel implements ModelInterface
 {
     /**
      * @param array $data

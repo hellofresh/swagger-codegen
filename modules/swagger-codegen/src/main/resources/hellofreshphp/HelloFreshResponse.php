@@ -3,6 +3,7 @@
 namespace HelloFresh\HelloFreshClient;
 
 use HelloFresh\BaseClient\Response;
+use HelloFresh\HelloFreshClient\ModelInterface;
 
 class HelloFreshResponse extends Response
 {
@@ -14,7 +15,7 @@ class HelloFreshResponse extends Response
     /**
      * @param AbstractModel $model
      */
-    public function setModel(AbstractModel $model)
+    public function setModel(ModelInterface $model)
     {
         $this->model = $model;
     }

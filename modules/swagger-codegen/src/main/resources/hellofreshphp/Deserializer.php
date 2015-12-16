@@ -2,8 +2,6 @@
 
 namespace HelloFresh\HelloFreshClient;
 
-use GuzzleHttp\Message\ResponseInterface;
-
 class Deserializer
 {
     /**
@@ -27,7 +25,7 @@ class Deserializer
      * @param  ResponseInterface $response
      * @return \Illuminate\Support\Contracts\ArrayableInterface|null
      */
-    public static function deserialize($fqcn, ResponseInterface $response)
+    public static function deserialize($fqcn, HelloFreshResponse $response)
     {
         return static::recursiveAppointance($fqcn, json_decode($response->getBody()));
     }
