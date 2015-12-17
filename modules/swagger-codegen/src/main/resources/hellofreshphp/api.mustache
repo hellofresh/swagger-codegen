@@ -9,18 +9,6 @@ use HelloFresh\BaseClient\HttpInterface;
 
 class {{classname}} extends AbstractHelloFreshPurpose
 {
-    /**
-     * @var HelloFreshClient
-     */
-    protected $client;
-
-    /**
-     * @param HelloFreshClient
-     */
-    public function __construct(HelloFreshClient $client)
-    {
-        $this->client = $client;
-    }
 
 {{#operation}}
     /**
