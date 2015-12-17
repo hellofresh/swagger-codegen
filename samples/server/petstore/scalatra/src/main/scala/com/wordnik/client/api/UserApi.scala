@@ -30,32 +30,15 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val createUserOperation = (apiOperation[Unit]("createUser")
       summary "Create user"
-      parameters(
-        
-        
-        
-        bodyParam[User]("body").description("").optional
-        
-        
-        
-        )
+      parameters(bodyParam[User]("body").description("").optional)
   )
 
   post("/user",operation(createUserOperation)) {
     
     
     
-    
-
-    
-
-    
-
-    
-
-    
-      val body = parsedBody.extract[User]
-    
+                
+bodyParam[User]("body").description("").optional
     
     println("body: " + body)
   
@@ -65,32 +48,15 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val createUsersWithArrayInputOperation = (apiOperation[Unit]("createUsersWithArrayInput")
       summary "Creates list of users with given input array"
-      parameters(
-        
-        
-        
-        bodyParam[List[User]]("body").description("").optional
-        
-        
-        
-        )
+      parameters(bodyParam[List[User]]("body").description("").optional)
   )
 
   post("/user/createWithArray",operation(createUsersWithArrayInputOperation)) {
     
     
     
-    
-
-    
-
-    
-
-    
-
-    
-      val body = parsedBody.extract[List[User]]
-    
+                
+bodyParam[List[User]]("body").description("").optional
     
     println("body: " + body)
   
@@ -100,32 +66,15 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val createUsersWithListInputOperation = (apiOperation[Unit]("createUsersWithListInput")
       summary "Creates list of users with given input array"
-      parameters(
-        
-        
-        
-        bodyParam[List[User]]("body").description("").optional
-        
-        
-        
-        )
+      parameters(bodyParam[List[User]]("body").description("").optional)
   )
 
   post("/user/createWithList",operation(createUsersWithListInputOperation)) {
     
     
     
-    
-
-    
-
-    
-
-    
-
-    
-      val body = parsedBody.extract[List[User]]
-    
+                
+bodyParam[List[User]]("body").description("").optional
     
     println("body: " + body)
   
@@ -135,59 +84,29 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val loginUserOperation = (apiOperation[String]("loginUser")
       summary "Logs user into the system"
-      parameters(
-        queryParam[String]("username").description("").optional
-        
-        
-        
-        
-        
-        ,
-        queryParam[String]("password").description("").optional
-        
-        
-        
-        
-        
-        
-        )
+      parameters(queryParam[String]("username").description("").optional,
+        queryParam[String]("password").description("").optional)
   )
 
   get("/user/login",operation(loginUserOperation)) {
     
     
     
-    
-
-    
+        
       
       val username = params.getAs[String]("username")
-      
-    
+            
 
-    
-
-    
-
-    
     
     println("username: " + username)
   
     
     
-    
-
-    
+        
       
       val password = params.getAs[String]("password")
-      
-    
+            
 
-    
-
-    
-
-    
     
     println("password: " + password)
   
@@ -197,8 +116,7 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val logoutUserOperation = (apiOperation[Unit]("logoutUser")
       summary "Logs out current logged in user session"
-      parameters(
-        )
+      parameters()
   )
 
   get("/user/logout",operation(logoutUserOperation)) {
@@ -209,32 +127,16 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val getUserByNameOperation = (apiOperation[User]("getUserByName")
       summary "Get user by user name"
-      parameters(
-        
-        pathParam[String]("username").description("")
-        
-        
-        
-        
-        
-        )
+      parameters(pathParam[String]("username").description(""))
   )
 
   get("/user/{username}",operation(getUserByNameOperation)) {
     
     
     
-    
       val username = params.getOrElse("username", halt(400))
-    
+                
 
-    
-
-    
-
-    
-
-    
     
     println("username: " + username)
   
@@ -244,55 +146,24 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val updateUserOperation = (apiOperation[Unit]("updateUser")
       summary "Updated user"
-      parameters(
-        
-        pathParam[String]("username").description("")
-        
-        
-        
-        
-        ,
-        
-        
-        
-        bodyParam[User]("body").description("").optional
-        
-        
-        
-        )
+      parameters(pathParam[String]("username").description(""),
+        bodyParam[User]("body").description("").optional)
   )
 
   put("/user/{username}",operation(updateUserOperation)) {
     
     
     
-    
       val username = params.getOrElse("username", halt(400))
-    
+                
 
-    
-
-    
-
-    
-
-    
     
     println("username: " + username)
   
     
     
-    
-
-    
-
-    
-
-    
-
-    
-      val body = parsedBody.extract[User]
-    
+                
+bodyParam[User]("body").description("").optional
     
     println("body: " + body)
   
@@ -302,32 +173,16 @@ class UserApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val deleteUserOperation = (apiOperation[Unit]("deleteUser")
       summary "Delete user"
-      parameters(
-        
-        pathParam[String]("username").description("")
-        
-        
-        
-        
-        
-        )
+      parameters(pathParam[String]("username").description(""))
   )
 
   delete("/user/{username}",operation(deleteUserOperation)) {
     
     
     
-    
       val username = params.getOrElse("username", halt(400))
-    
+                
 
-    
-
-    
-
-    
-
-    
     
     println("username: " + username)
   

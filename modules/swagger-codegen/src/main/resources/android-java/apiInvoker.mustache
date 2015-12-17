@@ -1,11 +1,5 @@
 package {{invokerPackage}};
 
-
-import com.fasterxml.jackson.core.JsonGenerator.Feature;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import org.apache.http.*;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.*;
@@ -29,6 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -54,6 +49,8 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import com.google.gson.JsonParseException;
 
 public class ApiInvoker {
   private static ApiInvoker INSTANCE = new ApiInvoker();
@@ -136,6 +133,62 @@ public class ApiInvoker {
     }
   }
 
+  /*
+    Format to {@code Pair} objects.
+  */
+  public static List<Pair> parameterToPairs(String collectionFormat, String name, Object value){
+    List<Pair> params = new ArrayList<Pair>();
+
+    // preconditions
+    if (name == null || name.isEmpty() || value == null) return params;
+
+    Collection valueCollection = null;
+    if (value instanceof Collection) {
+      valueCollection = (Collection) value;
+    } else {
+      params.add(new Pair(name, parameterToString(value)));
+      return params;
+    }
+
+    if (valueCollection.isEmpty()){
+      return params;
+    }
+
+    // get the collection format
+    collectionFormat = (collectionFormat == null || collectionFormat.isEmpty() ? "csv" : collectionFormat); // default: csv
+
+    // create the params based on the collection format
+    if (collectionFormat.equals("multi")) {
+      for (Object item : valueCollection) {
+        params.add(new Pair(name, parameterToString(item)));
+      }
+
+      return params;
+    }
+
+    String delimiter = ",";
+
+    if (collectionFormat.equals("csv")) {
+      delimiter = ",";
+    } else if (collectionFormat.equals("ssv")) {
+      delimiter = " ";
+    } else if (collectionFormat.equals("tsv")) {
+      delimiter = "\t";
+    } else if (collectionFormat.equals("pipes")) {
+      delimiter = "|";
+    }
+
+    StringBuilder sb = new StringBuilder() ;
+    for (Object item : valueCollection) {
+      sb.append(delimiter);
+      sb.append(parameterToString(item));
+    }
+
+    params.add(new Pair(name, sb.substring(1)));
+
+    return params;
+  }
+
   public ApiInvoker() {
     initConnectionManager();
   }
@@ -159,21 +212,19 @@ public class ApiInvoker {
   public static Object deserialize(String json, String containerType, Class cls) throws ApiException {
     try{
       if("list".equalsIgnoreCase(containerType) || "array".equalsIgnoreCase(containerType)) {
-        JavaType typeInfo = JsonUtil.getJsonMapper().getTypeFactory().constructCollectionType(List.class, cls);
-        List response = (List<?>) JsonUtil.getJsonMapper().readValue(json, typeInfo);
-        return response;
+        return JsonUtil.deserializeToList(json, cls);
       }
       else if(String.class.equals(cls)) {
         if(json != null && json.startsWith("\"") && json.endsWith("\"") && json.length() > 1)
-          return json.substring(1, json.length() - 2);
+          return json.substring(1, json.length() - 1);
         else
           return json;
       }
       else {
-        return JsonUtil.getJsonMapper().readValue(json, cls);
+        return JsonUtil.deserializeToObject(json, cls);
       }
     }
-    catch (IOException e) {
+    catch (JsonParseException e) {
       throw new ApiException(500, e.getMessage());
     }
   }
@@ -181,7 +232,7 @@ public class ApiInvoker {
   public static String serialize(Object obj) throws ApiException {
     try {
       if (obj != null)
-        return JsonUtil.getJsonMapper().writeValueAsString(obj);
+        return JsonUtil.serialize(obj);
       else
         return null;
     }
@@ -190,21 +241,24 @@ public class ApiInvoker {
     }
   }
 
-  public String invokeAPI(String host, String path, String method, Map<String, String> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String contentType) throws ApiException {
+  public String invokeAPI(String host, String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String contentType) throws ApiException {
     HttpClient client = getClient(host);
 
     StringBuilder b = new StringBuilder();
-    for(String key : queryParams.keySet()) {
-      String value = queryParams.get(key);
-      if (value != null){
-        if(b.toString().length() == 0)
-          b.append("?");
-        else
+    b.append("?");
+    if (queryParams != null){
+      for (Pair queryParam : queryParams){
+        if (!queryParam.getName().isEmpty()) {
+          b.append(escapeString(queryParam.getName()));
+          b.append("=");
+          b.append(escapeString(queryParam.getValue()));
           b.append("&");
-        b.append(escapeString(key)).append("=").append(escapeString(value));
+        }
       }
     }
-    String url = host + path + b.toString();
+
+    String querystring = b.substring(0, b.length() - 1);
+    String url = host + path + querystring;
 
     HashMap<String, String> headers = new HashMap<String, String>();
 
@@ -311,8 +365,10 @@ public class ApiInvoker {
 
       int code = response.getStatusLine().getStatusCode();
       String responseString = null;
-      if(code == 204)
+      if(code == 204) {
         responseString = "";
+        return responseString;
+      }
       else if(code >= 200 && code < 300) {
         if(response.getEntity() != null) {
           HttpEntity resEntity = response.getEntity();

@@ -6,11 +6,7 @@
   <packaging>jar</packaging>
   <name>{{artifactId}}</name>
   <version>{{artifactVersion}}</version>
-  <scm>
-    <connection>scm:git:git@github.com:wordnik/swagger-mustache.git</connection>
-    <developerConnection>scm:git:git@github.com:wordnik/swagger-codegen.git</developerConnection>
-    <url>https://github.com/wordnik/swagger-codegen</url>
-  </scm>
+
   <prerequisites>
     <maven>2.2.0</maven>
   </prerequisites>
@@ -108,10 +104,12 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>com.wordnik</groupId>
+      <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>${swagger-annotations-version}</version>
     </dependency>
+
+    <!-- HTTP client: jersey-client -->
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
@@ -122,6 +120,8 @@
       <artifactId>jersey-multipart</artifactId>
       <version>${jersey-version}</version>
     </dependency>
+
+    <!-- JSON processing: jackson -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -138,14 +138,26 @@
       <version>${jackson-version}</version>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <version>${jackson-version}</version>
+    </dependency>    
+    <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-joda</artifactId>
       <version>2.1.5</version>
-    </dependency>   
+    </dependency>
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>${jodatime-version}</version>
+    </dependency>
+
+    <!-- Base64 encoding that works in both JVM and Android -->
+    <dependency>
+      <groupId>com.brsanthu</groupId>
+      <artifactId>migbase64</artifactId>
+      <version>2.2</version>
     </dependency>
 
     <!-- test dependencies -->
@@ -157,7 +169,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <swagger-annotations-version>1.5.3-M1</swagger-annotations-version>
+    <swagger-annotations-version>1.5.4</swagger-annotations-version>
     <jersey-version>1.18</jersey-version>
     <jackson-version>2.4.2</jackson-version>
     <jodatime-version>2.3</jodatime-version>

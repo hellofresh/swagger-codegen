@@ -1,7 +1,7 @@
 package io.swagger.client.api
 
 import io.swagger.client.model.Order
-import com.wordnik.swagger.client._
+import io.swagger.client._
 import scala.concurrent.{ Future, Await }
 import scala.concurrent.duration._
 import collection.mutable
@@ -30,7 +30,8 @@ class StoreApi(client: TransportClient, config: SwaggerConfig) extends ApiClient
   }
 
   
-  def placeOrder(body: Order)(implicit reader: ClientResponseReader[Order], writer: RequestWriter[Order]): Future[Order] = {
+  def placeOrder(body: Option[Order] = None
+      )(implicit reader: ClientResponseReader[Order], writer: RequestWriter[Order]): Future[Order] = {
     // create path and map variables
     val path = (addFmt("/store/order"))
 

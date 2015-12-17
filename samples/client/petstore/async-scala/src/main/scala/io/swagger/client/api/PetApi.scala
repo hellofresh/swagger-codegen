@@ -2,7 +2,7 @@ package io.swagger.client.api
 
 import io.swagger.client.model.Pet
 import java.io.File
-import com.wordnik.swagger.client._
+import io.swagger.client._
 import scala.concurrent.{ Future, Await }
 import scala.concurrent.duration._
 import collection.mutable
@@ -10,7 +10,8 @@ import collection.mutable
 class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(client, config) {
 
   
-  def updatePet(body: Pet)(implicit reader: ClientResponseReader[Unit], writer: RequestWriter[Pet]): Future[Unit] = {
+  def updatePet(body: Option[Pet] = None
+      )(implicit reader: ClientResponseReader[Unit], writer: RequestWriter[Pet]): Future[Unit] = {
     // create path and map variables
     val path = (addFmt("/pet"))
 
@@ -31,7 +32,8 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
   }
 
   
-  def addPet(body: Pet)(implicit reader: ClientResponseReader[Unit], writer: RequestWriter[Pet]): Future[Unit] = {
+  def addPet(body: Option[Pet] = None
+      )(implicit reader: ClientResponseReader[Unit], writer: RequestWriter[Pet]): Future[Unit] = {
     // create path and map variables
     val path = (addFmt("/pet"))
 
@@ -52,7 +54,8 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
   }
 
   
-  def findPetsByStatus(status: List[String])(implicit reader: ClientResponseReader[List[Pet]]): Future[List[Pet]] = {
+  def findPetsByStatus(status: Option[List[String]] = Some(available)
+      )(implicit reader: ClientResponseReader[List[Pet]]): Future[List[Pet]] = {
     // create path and map variables
     val path = (addFmt("/pet/findByStatus"))
 
@@ -62,8 +65,7 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
 
     
 
-    
-    if(status != null)   queryParams += "status" -> status.toString
+    if(status != null) status.foreach { v => queryParams += "status" -> v.toString }
 
     
 
@@ -74,7 +76,8 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
   }
 
   
-  def findPetsByTags(tags: List[String])(implicit reader: ClientResponseReader[List[Pet]]): Future[List[Pet]] = {
+  def findPetsByTags(tags: Option[List[String]] = None
+      )(implicit reader: ClientResponseReader[List[Pet]]): Future[List[Pet]] = {
     // create path and map variables
     val path = (addFmt("/pet/findByTags"))
 
@@ -84,8 +87,7 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
 
     
 
-    
-    if(tags != null)   queryParams += "tags" -> tags.toString
+    if(tags != null) tags.foreach { v => queryParams += "tags" -> v.toString }
 
     
 
@@ -119,8 +121,9 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
 
   
   def updatePetWithForm(petId: String,
-      name: String,
-      status: String)(implicit reader: ClientResponseReader[Unit]): Future[Unit] = {
+      name: Option[String] = None,
+      status: Option[String] = None
+      )(implicit reader: ClientResponseReader[Unit]): Future[Unit] = {
     // create path and map variables
     val path = (addFmt("/pet/{petId}")
         replaceAll ("\\{" + "petId" + "\\}",petId.toString))
@@ -142,8 +145,9 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
   }
 
   
-  def deletePet(api_key: String,
-      petId: Long)(implicit reader: ClientResponseReader[Unit]): Future[Unit] = {
+  def deletePet(petId: Long,
+      apiKey: Option[String] = None
+      )(implicit reader: ClientResponseReader[Unit]): Future[Unit] = {
     // create path and map variables
     val path = (addFmt("/pet/{petId}")
         replaceAll ("\\{" + "petId" + "\\}",petId.toString))
@@ -156,7 +160,7 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
 
     
 
-    headerParams += "api_key" -> api_key.toString
+    headerParams += "api_key" -> apiKey.toString
 
     val resFuture = client.submit("DELETE", path, queryParams.toMap, headerParams.toMap, "")
     resFuture flatMap { resp =>
@@ -166,8 +170,9 @@ class PetApi(client: TransportClient, config: SwaggerConfig) extends ApiClient(c
 
   
   def uploadFile(petId: Long,
-      additionalMetadata: String,
-      file: File)(implicit reader: ClientResponseReader[Unit]): Future[Unit] = {
+      additionalMetadata: Option[String] = None,
+      file: Option[File] = None
+      )(implicit reader: ClientResponseReader[Unit]): Future[Unit] = {
     // create path and map variables
     val path = (addFmt("/pet/{petId}/uploadImage")
         replaceAll ("\\{" + "petId" + "\\}",petId.toString))

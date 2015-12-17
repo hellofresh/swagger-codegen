@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.wordnik</groupId>
+  <groupId>io.swagger</groupId>
   <artifactId>swagger-scala-client</artifactId>
   <packaging>jar</packaging>
   <name>swagger-scala-client</name>
@@ -72,6 +72,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9.1</version>
         <executions>
           <execution>
             <id>add_sources</id>
@@ -177,7 +178,7 @@
       <version>${scala-version}</version>
     </dependency>
     <dependency>
-      <groupId>com.wordnik</groupId>
+      <groupId>io.swagger</groupId>
       <artifactId>swagger-core</artifactId>
       <version>${swagger-core-version}</version>
     </dependency>
@@ -208,14 +209,16 @@
     <scala-version>2.10.4</scala-version>
     <joda-version>1.2</joda-version>
     <joda-time-version>2.2</joda-time-version>
-    <jersey-version>1.7</jersey-version>
-    <swagger-core-version>1.5.0-M1</swagger-core-version>
+    <jersey-version>1.19</jersey-version>
+    <swagger-core-version>1.5.4</swagger-core-version>
     <jersey-async-version>1.0.5</jersey-async-version>
     <maven-plugin.version>1.0.0</maven-plugin.version>
     <jackson-version>2.4.2</jackson-version>
 
     <junit-version>4.8.1</junit-version>
     <scala-maven-plugin-version>3.1.5</scala-maven-plugin-version>
-    <scala-test-version>2.1.3</scala-test-version>
+    <scala-test-version>2.2.4</scala-test-version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

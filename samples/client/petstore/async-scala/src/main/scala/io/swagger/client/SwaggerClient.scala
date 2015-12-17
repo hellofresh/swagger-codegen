@@ -2,7 +2,7 @@ package io.swagger.client
 
 import io.swagger.client.api._
 
-import com.wordnik.swagger.client._
+import io.swagger.client._
 
 import java.io.Closeable
 

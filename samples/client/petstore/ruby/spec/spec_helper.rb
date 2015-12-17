@@ -1,16 +1,11 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'monkey'
-require 'swagger'
+require 'petstore'
 require 'vcr'
 require 'typhoeus'
 require 'json'
 require 'yaml'
 require 'rspec'
-
-Dir[File.join(File.dirname(__FILE__), "../lib/*.rb")].each {|file| require file }
-Dir[File.join(File.dirname(__FILE__), "../models/*.rb")].each {|file| require file }
-Dir[File.join(File.dirname(__FILE__), "../resources/*.rb")].each {|file| require file }
 
 RSpec.configure do |config|
   # some (optional) config here
@@ -33,26 +28,40 @@ def help
   exit
 end
 
+# no longer reading credentials (not used) from file (20150413)
 # Parse ~/.swagger.yml for user credentials
-begin
-  CREDENTIALS = YAML::load_file(File.join(ENV['HOME'], ".swagger.yml")).symbolize_keys
-rescue
-  help
+#begin
+#  CREDENTIALS = YAML::load_file(File.join(ENV['HOME'], ".swagger.yml")).symbolize_keys
+#rescue
+#  help
+#end
+
+API_CLIENT = Petstore::ApiClient.new(Petstore::Configuration.new)
+
+# always delete and then re-create the pet object with 10002
+def prepare_pet(pet_api)
+  # remove the pet
+  pet_api.delete_pet(10002)
+  # recreate the pet
+  category = Petstore::Category.new('id' => 20002, 'name' => 'category test')
+  tag = Petstore::Tag.new('id' => 30002, 'name' => 'tag test')
+  pet = Petstore::Pet.new('id' => 10002, 'name' => "RUBY UNIT TESTING", 'photo_urls' => 'photo url',
+                               'category' => category, 'tags' => [tag], 'status' => 'pending')
+
+  pet_api.add_pet(:'body'=> pet)
 end
 
-def configure_swagger
-  Swagger.configure do |config|
-    config.api_key = "special-key"
-    config.username = ""
-    config.password = ""
-
-    config.host = 'petstore.swagger.wordnik.com'
-    config.base_path = '/api'
-  end
+# always delete and then re-create the store order
+def prepare_store(store_api)
+  order = Petstore::Order.new("id" => 10002,
+		  "petId" => 10002,
+		  "quantity" => 789,
+		  "shipDate" => "2015-04-06T23:42:01.678Z",
+		  "status" => "placed",
+		  "complete" => false)
+  store_api.place_order(:body => order)
 end
 
-configure_swagger
-
-# A random string to tack onto stuff to ensure we're not seeing 
+# A random string to tack onto stuff to ensure we're not seeing
 # data from a previous test run
 RAND = ("a".."z").to_a.sample(8).join

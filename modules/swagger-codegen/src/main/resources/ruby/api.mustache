@@ -1,92 +1,96 @@
 require "uri"
 
+module {{moduleName}}
 {{#operations}}
-class {{classname}}
-  basePath = "{{basePath}}"
-  # apiInvoker = APIInvoker
+  class {{classname}}
+    attr_accessor :api_client
 
+    def initialize(api_client = ApiClient.default)
+      @api_client = api_client
+    end
 {{#operation}}
 {{newline}}
-  # {{summary}}
-  # {{notes}}
-{{#allParams}}{{^optional}}  # @param {{paramName}} {{description}}
-{{/optional}}{{/allParams}}{{#allParams}}{{#optional}}  # @option opts [{{dataType}}] :{{baseName}} {{description}}
-{{/optional}}{{/allParams}}  # @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
-  def self.{{nickname}} ({{#allParams}}{{paramName}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}, {{/allParams}}opts={})
-    query_param_keys = [{{#queryParams}}:{{paramName}}{{#hasMore}},{{/hasMore}}{{/queryParams}}]
-    headerParams = {}
-
-    {{#requiredParamCount}}
-    # verify existence of params
-    {{#requiredParams}}
-    raise "{{{paramName}}} is required" if {{{paramName}}}.nil?
-    {{/requiredParams}}
-    {{/requiredParamCount}}
-    
-    # set default values and merge with input
-    options = {
-      {{#allParams}}:'{{paramName}}' => {{paramName}}{{#hasMore}},{{/hasMore}}
-      {{/allParams}}
-    }.merge(opts)
-
-    #resource path
-    path = "{{path}}".sub('{format}','json'){{#pathParams}}.sub('{' + '{{baseName}}' + '}', {{paramName}}.to_s)
-    {{/pathParams}}{{newline}}
-    
-    # pull querystring keys from options
-    queryopts = options.select do |key,value|
-      query_param_keys.include? key
+    # {{summary}}
+    # {{notes}}
+{{#allParams}}{{#required}}    # @param {{paramName}} {{description}}
+{{/required}}{{/allParams}}    # @param [Hash] opts the optional parameters
+{{#allParams}}{{^required}}    # @option opts [{{{dataType}}}] :{{paramName}} {{description}}
+{{/required}}{{/allParams}}    # @return [{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}nil{{/returnType}}]
+    def {{operationId}}({{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}opts = {})
+      {{#returnType}}data, status_code, headers = {{/returnType}}{{operationId}}_with_http_info({{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}opts)
+      {{#returnType}}return data{{/returnType}}{{^returnType}}return nil{{/returnType}}
     end
 
-    # header parameters
-    headers = {}
-
-    _header_accept = '{{#produces}}{{mediaType}}{{#hasMore}}, {{/hasMore}}{{/produces}}'
-    if _header_accept != ''
-      headerParams['Accept'] = _header_accept
-    end 
-    _header_content_type = [{{#consumes}}'{{mediaType}}'{{#hasMore}}, {{/hasMore}}{{/consumes}}]
-    headerParams['Content-Type'] = _header_content_type.length > 0 ? _header_content_type[0] : 'application/json'
-
-    {{#headerParams}}{{#optional}}headers[:'{{{baseName}}}'] = options[:'{{{paramName}}}'] if options[:'{{{paramName}}}']{{/optional}}{{/headerParams}}
-    {{#headerParams}}{{^optional}}headers[:'{{{baseName}}}'] = {{{paramName}}}{{/optional}}{{/headerParams}}
-    # http body (model)
-    post_body = nil
-    {{#bodyParam}}
-    if body != nil
-      if body.is_a?(Array)
-        array = Array.new
-        body.each do |item|
-          if item.respond_to?("to_body".to_sym)
-            array.push item.to_body
-          else
-            array.push item
-          end
-        end
-        post_body = array
-      else 
-        if body.respond_to?("to_body".to_sym)
-          post_body = body.to_body
-        else
-          post_body = body
-        end
+    # {{summary}}
+    # {{notes}}
+{{#allParams}}{{#required}}    # @param {{paramName}} {{description}}
+{{/required}}{{/allParams}}    # @param [Hash] opts the optional parameters
+{{#allParams}}{{^required}}    # @option opts [{{{dataType}}}] :{{paramName}} {{description}}
+{{/required}}{{/allParams}}    # @return [Array<({{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}nil{{/returnType}}, Fixnum, Hash)>] {{#returnType}}{{{returnType}}} data{{/returnType}}{{^returnType}}nil{{/returnType}}, response status code and response headers
+    def {{operationId}}_with_http_info({{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "Calling API: {{classname}}#{{operationId}} ..."
       end
+      {{#allParams}}{{#required}}
+      # verify the required parameter '{{paramName}}' is set
+      fail "Missing the required parameter '{{paramName}}' when calling {{operationId}}" if {{{paramName}}}.nil?{{#isEnum}}
+      unless [{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}].include?({{{paramName}}})
+        fail "invalid value for '{{{paramName}}}', must be one of {{#allowableValues}}{{#values}}{{{this}}}{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}"
+      end{{/isEnum}}
+      {{/required}}{{^required}}{{#isEnum}}
+      if opts[:'{{{paramName}}}'] && ![{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}].include?(opts[:'{{{paramName}}}'])
+        fail 'invalid value for "{{{paramName}}}", must be one of {{#allowableValues}}{{#values}}{{{this}}}{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}'
+      end
+      {{/isEnum}}{{/required}}{{/allParams}}
+      # resource path
+      path = "{{path}}".sub('{format}','json'){{#pathParams}}.sub('{' + '{{baseName}}' + '}', {{paramName}}.to_s){{/pathParams}}
+
+      # query parameters
+      query_params = {}{{#queryParams}}{{#required}}
+      query_params[:'{{{baseName}}}'] = {{#collectionFormat}}@api_client.build_collection_param({{{paramName}}}, :{{{collectionFormat}}}){{/collectionFormat}}{{^collectionFormat}}{{{paramName}}}{{/collectionFormat}}{{/required}}{{/queryParams}}{{#queryParams}}{{^required}}
+      query_params[:'{{{baseName}}}'] = {{#collectionFormat}}@api_client.build_collection_param(opts[:'{{{paramName}}}'], :{{{collectionFormat}}}){{/collectionFormat}}{{^collectionFormat}}opts[:'{{{paramName}}}']{{/collectionFormat}} if opts[:'{{{paramName}}}']{{/required}}{{/queryParams}}
+
+      # header parameters
+      header_params = {}
+
+      # HTTP header 'Accept' (if needed)
+      _header_accept = [{{#produces}}'{{mediaType}}'{{#hasMore}}, {{/hasMore}}{{/produces}}]
+      _header_accept_result = @api_client.select_header_accept(_header_accept) and header_params['Accept'] = _header_accept_result
+
+      # HTTP header 'Content-Type'
+      _header_content_type = [{{#consumes}}'{{mediaType}}'{{#hasMore}}, {{/hasMore}}{{/consumes}}]
+      header_params['Content-Type'] = @api_client.select_header_content_type(_header_content_type){{#headerParams}}{{#required}}
+      header_params[:'{{{baseName}}}'] = {{#collectionFormat}}@api_client.build_collection_param({{{paramName}}}, :{{{collectionFormat}}}){{/collectionFormat}}{{^collectionFormat}}{{{paramName}}}{{/collectionFormat}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}
+      header_params[:'{{{baseName}}}'] = {{#collectionFormat}}@api_client.build_collection_param(opts[:'{{{paramName}}}'], :{{{collectionFormat}}}){{/collectionFormat}}{{^collectionFormat}}opts[:'{{{paramName}}}']{{/collectionFormat}} if opts[:'{{{paramName}}}']{{/required}}{{/headerParams}}
+
+      # form parameters
+      form_params = {}{{#formParams}}{{#required}}
+      form_params["{{baseName}}"] = {{#collectionFormat}}@api_client.build_collection_param({{{paramName}}}, :{{{collectionFormat}}}){{/collectionFormat}}{{^collectionFormat}}{{{paramName}}}{{/collectionFormat}}{{/required}}{{/formParams}}{{#formParams}}{{^required}}
+      form_params["{{baseName}}"] = {{#collectionFormat}}@api_client.build_collection_param(opts[:'{{{paramName}}}'], :{{{collectionFormat}}}){{/collectionFormat}}{{^collectionFormat}}opts[:'{{{paramName}}}']{{/collectionFormat}} if opts[:'{{paramName}}']{{/required}}{{/formParams}}
+
+      # http body (model)
+      {{^bodyParam}}post_body = nil
+      {{/bodyParam}}{{#bodyParam}}post_body = @api_client.object_to_http_body({{#required}}{{{paramName}}}{{/required}}{{^required}}opts[:'{{{paramName}}}']{{/required}})
+      {{/bodyParam}}
+
+      auth_names = [{{#authMethods}}'{{name}}'{{#hasMore}}, {{/hasMore}}{{/authMethods}}]
+      data, status_code, headers = @api_client.call_api(:{{httpMethod}}, path,
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names{{#returnType}},
+        :return_type => '{{{returnType}}}'{{/returnType}})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: {{classname}}#{{operationId}}\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
     end
-    {{/bodyParam}}
-    # form parameters
-    form_parameter_hash = {}
-    {{#formParams}}{{#optional}}form_parameter_hash["{{baseName}}"] = options[:'{{paramName}}'] if options[:'{{paramName}}']{{/optional}}
-    {{^optional}}form_parameter_hash["{{baseName}}"] = {{paramName}}{{/optional}}{{/formParams}}
-    {{#returnType}}
-    response = Swagger::Request.new(:{{httpMethod}}, path, {:params=>queryopts,:headers=>headers, :body=>post_body, :form_params => form_parameter_hash }).make.body
-    {{#returnContainer}}
-    response.map {|response|{{/returnContainer}} {{returnBaseType}}.new(response){{#returnContainer}} }{{/returnContainer}}
-    {{/returnType}}
-    {{^returnType}}
-    Swagger::Request.new(:{{httpMethod}}, path, {:params=>queryopts,:headers=>headers, :body=>post_body, :form_params => form_parameter_hash }).make
-    {{/returnType}}
-  {{newline}}
-  end
 {{/operation}}
-end
+  end
 {{/operations}}
+end
+
+
+
+

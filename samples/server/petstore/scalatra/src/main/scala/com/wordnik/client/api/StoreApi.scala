@@ -30,8 +30,7 @@ class StoreApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val getInventoryOperation = (apiOperation[Map[String, Int]]("getInventory")
       summary "Returns pet inventories by status"
-      parameters(
-        )
+      parameters()
   )
 
   get("/store/inventory",operation(getInventoryOperation)) {
@@ -42,32 +41,15 @@ class StoreApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val placeOrderOperation = (apiOperation[Order]("placeOrder")
       summary "Place an order for a pet"
-      parameters(
-        
-        
-        
-        bodyParam[Order]("body").description("").optional
-        
-        
-        
-        )
+      parameters(bodyParam[Order]("body").description("").optional)
   )
 
   post("/store/order",operation(placeOrderOperation)) {
     
     
     
-    
-
-    
-
-    
-
-    
-
-    
-      val body = parsedBody.extract[Order]
-    
+                
+bodyParam[Order]("body").description("").optional
     
     println("body: " + body)
   
@@ -77,32 +59,16 @@ class StoreApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val getOrderByIdOperation = (apiOperation[Order]("getOrderById")
       summary "Find purchase order by ID"
-      parameters(
-        
-        pathParam[String]("orderId").description("")
-        
-        
-        
-        
-        
-        )
+      parameters(pathParam[String]("orderId").description(""))
   )
 
   get("/store/order/{orderId}",operation(getOrderByIdOperation)) {
     
     
     
-    
       val orderId = params.getOrElse("orderId", halt(400))
-    
+                
 
-    
-
-    
-
-    
-
-    
     
     println("orderId: " + orderId)
   
@@ -112,32 +78,16 @@ class StoreApi (implicit val swagger: Swagger) extends ScalatraServlet
 
   val deleteOrderOperation = (apiOperation[Unit]("deleteOrder")
       summary "Delete purchase order by ID"
-      parameters(
-        
-        pathParam[String]("orderId").description("")
-        
-        
-        
-        
-        
-        )
+      parameters(pathParam[String]("orderId").description(""))
   )
 
   delete("/store/order/{orderId}",operation(deleteOrderOperation)) {
     
     
     
-    
       val orderId = params.getOrElse("orderId", halt(400))
-    
+                
 
-    
-
-    
-
-    
-
-    
     
     println("orderId: " + orderId)
   
