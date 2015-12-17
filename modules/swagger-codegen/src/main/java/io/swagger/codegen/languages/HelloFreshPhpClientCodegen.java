@@ -6,12 +6,12 @@ import io.swagger.codegen.CodegenConstants;
 import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
 import io.swagger.codegen.SupportingFile;
+import io.swagger.codegen.CodegenModel;
+import io.swagger.models.Model;
 import io.swagger.models.properties.*;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,18 +34,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     protected String artifactVersion = "1.0.0";
     protected String srcBasePath = "lib";
     protected String variableNamingConvention= "snake_case";
-
-    public CodegenType getTag() {
-        return CodegenType.CLIENT;
-    }
-
-    public String getName() {
-        return "php";
-    }
-
-    public String getHelp() {
-        return "Generates a PHP client library.";
-    }
 
     public HelloFreshPhpClientCodegen() {
         super();
@@ -115,8 +103,315 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         supportingFiles.add(new SupportingFile("ModelInterface.php", packagePath + "/lib", "ModelInterface.php"));
     }
 
-    public Map<String, String> testTemplateFiles() {
-        return testTemplateFiles;
+    public String getPackagePath() {
+        return packagePath;
+    }
+
+    public String toPackagePath(String packageName, String basePath) {
+        packageName = packageName.replace(invokerPackage, "");
+        if (basePath != null && basePath.length() > 0) {
+            basePath = basePath.replaceAll("[\\\\/]?$", "") + File.separatorChar;
+        }
+
+        String regFirstPathSeparator;
+        if ("/".equals(File.separator)) { // for mac, linux
+            regFirstPathSeparator = "^/";
+        } else { // for windows
+            regFirstPathSeparator = "^\\\\";
+        }
+
+        String regLastPathSeparator;
+        if ("/".equals(File.separator)) { // for mac, linux
+            regLastPathSeparator = "/$";
+        } else { // for windows
+            regLastPathSeparator = "\\\\$";
+        }
+
+        return (getPackagePath() + File.separatorChar + basePath
+                    // Replace period, backslash, forward slash with file separator in package name
+                    + packageName.replaceAll("[\\.\\\\/]", Matcher.quoteReplacement(File.separator))
+                    // Trim prefix file separators from package path
+                    .replaceAll(regFirstPathSeparator, ""))
+                    // Trim trailing file separators from the overall path
+                    .replaceAll(regLastPathSeparator+ "$", "");
+    }
+
+    public CodegenType getTag() {
+        return CodegenType.CLIENT;
+    }
+
+    public String getName() {
+        return "php";
+    }
+
+    public String getHelp() {
+        return "Generates a PHP client library.";
+    }
+
+    @Override
+    public void processOpts() {
+        super.processOpts();
+
+        if (additionalProperties.containsKey(PACKAGE_PATH)) {
+            this.setPackagePath((String) additionalProperties.get(PACKAGE_PATH));
+        } else {
+            additionalProperties.put(PACKAGE_PATH, packagePath);
+        }
+
+        if (additionalProperties.containsKey(SRC_BASE_PATH)) {
+            this.setSrcBasePath((String) additionalProperties.get(SRC_BASE_PATH));
+        } else {
+            additionalProperties.put(SRC_BASE_PATH, srcBasePath);
+        }
+
+        if (additionalProperties.containsKey(CodegenConstants.INVOKER_PACKAGE)) {
+            this.setInvokerPackage((String) additionalProperties.get(CodegenConstants.INVOKER_PACKAGE));
+        } else {
+            additionalProperties.put(CodegenConstants.INVOKER_PACKAGE, invokerPackage);
+        }
+
+        if (!additionalProperties.containsKey(CodegenConstants.MODEL_PACKAGE)) {
+            additionalProperties.put(CodegenConstants.MODEL_PACKAGE, modelPackage);
+        }
+
+        if (!additionalProperties.containsKey(CodegenConstants.API_PACKAGE)) {
+            additionalProperties.put(CodegenConstants.API_PACKAGE, apiPackage);
+        }
+
+        if (additionalProperties.containsKey(COMPOSER_PROJECT_NAME)) {
+            this.setComposerProjectName((String) additionalProperties.get(COMPOSER_PROJECT_NAME));
+        } else {
+            additionalProperties.put(COMPOSER_PROJECT_NAME, composerProjectName);
+        }
+
+        if (additionalProperties.containsKey(COMPOSER_VENDOR_NAME)) {
+            this.setComposerVendorName((String) additionalProperties.get(COMPOSER_VENDOR_NAME));
+        } else {
+            additionalProperties.put(COMPOSER_VENDOR_NAME, composerVendorName);
+        }
+
+        if (additionalProperties.containsKey(CodegenConstants.ARTIFACT_VERSION)) {
+            this.setArtifactVersion((String) additionalProperties.get(CodegenConstants.ARTIFACT_VERSION));
+        } else {
+            additionalProperties.put(CodegenConstants.ARTIFACT_VERSION, artifactVersion);
+        }
+
+        if (additionalProperties.containsKey(VARIABLE_NAMING_CONVENTION)) {
+            this.setParameterNamingConvention((String) additionalProperties.get(VARIABLE_NAMING_CONVENTION));
+        }
+
+        additionalProperties.put("escapedInvokerPackage", invokerPackage.replace("\\", "\\\\"));
+
+        supportingFiles.add(new SupportingFile("configuration.mustache", toPackagePath(invokerPackage, srcBasePath), "Configuration.php"));
+        supportingFiles.add(new SupportingFile("ApiClient.mustache", toPackagePath(invokerPackage, srcBasePath), "ApiClient.php"));
+        supportingFiles.add(new SupportingFile("ApiException.mustache", toPackagePath(invokerPackage, srcBasePath), "ApiException.php"));
+        supportingFiles.add(new SupportingFile("ObjectSerializer.mustache", toPackagePath(invokerPackage, srcBasePath), "ObjectSerializer.php"));
+        supportingFiles.add(new SupportingFile("composer.mustache", getPackagePath(), "composer.json"));
+        supportingFiles.add(new SupportingFile("autoload.mustache", getPackagePath(), "autoload.php"));
+    }
+
+    @Override
+    public String escapeReservedWord(String name) {
+        return "_" + name;
+    }
+
+    @Override
+    public String apiFileFolder() {
+        return (outputFolder + "/" + toPackagePath(apiPackage, srcBasePath));
+    }
+
+    public String modelFileFolder() {
+        return (outputFolder + "/" + toPackagePath(modelPackage, srcBasePath));
+    }
+
+    @Override
+    public String getTypeDeclaration(Property p) {
+        if (p instanceof ArrayProperty) {
+            ArrayProperty ap = (ArrayProperty) p;
+            Property inner = ap.getItems();
+            return getTypeDeclaration(inner) + "[]";
+        } else if (p instanceof MapProperty) {
+            MapProperty mp = (MapProperty) p;
+            Property inner = mp.getAdditionalProperties();
+            return getSwaggerType(p) + "[string," + getTypeDeclaration(inner) + "]";
+        } else if (p instanceof RefProperty) {
+            String type = super.getTypeDeclaration(p);
+            return (!languageSpecificPrimitives.contains(type))
+                    ? "\\" + modelPackage + "\\" + type : type;
+        }
+        return super.getTypeDeclaration(p);
+    }
+
+    @Override
+    public String getTypeDeclaration(String name) {
+        if (!languageSpecificPrimitives.contains(name)) {
+            return "\\" + modelPackage + "\\" + name;
+        }
+        return super.getTypeDeclaration(name);
+    }
+
+    @Override
+    public String getSwaggerType(Property p) {
+        String swaggerType = super.getSwaggerType(p);
+        String type = null;
+        if (typeMapping.containsKey(swaggerType)) {
+            type = typeMapping.get(swaggerType);
+            if (languageSpecificPrimitives.contains(type)) {
+                return type;
+            } else if (instantiationTypes.containsKey(type)) {
+                return type;
+            }
+        } else {
+            type = swaggerType;
+        }
+        if (type == null) {
+            return null;
+        }
+        return toModelName(type);
+    }
+
+    public void setInvokerPackage(String invokerPackage) {
+        this.invokerPackage = invokerPackage;
+    }
+
+    public void setArtifactVersion(String artifactVersion) {
+        this.artifactVersion = artifactVersion;
+    }
+
+    public void setPackagePath(String packagePath) {
+        this.packagePath = packagePath;
+    }
+
+    public void setSrcBasePath(String srcBasePath) {
+        this.srcBasePath = srcBasePath;
+    }
+
+    public void setParameterNamingConvention(String variableNamingConvention) {
+        this.variableNamingConvention = variableNamingConvention;
+    }
+
+    public void setComposerVendorName(String composerVendorName) {
+        this.composerVendorName = composerVendorName;
+    }
+
+    public void setComposerProjectName(String composerProjectName) {
+        this.composerProjectName = composerProjectName;
+    }
+
+    @Override
+    public String toVarName(String name) {
+        // sanitize name
+        name = sanitizeName(name);
+
+        if ("camelCase".equals(variableNamingConvention)) {
+          // return the name in camelCase style
+          // phone_number => phoneNumber
+          name =  camelize(name, true);
+        } else { // default to snake case
+          // return the name in underscore style
+          // PhoneNumber => phone_number
+          name =  underscore(name);
+        }
+
+        // parameter name starting with number won't compile
+        // need to escape it by appending _ at the beginning
+        if (name.matches("^\\d.*")) {
+            name = "_" + name;
+        }
+
+        return name;
+    }
+
+    @Override
+    public String toParamName(String name) {
+        // should be the same as variable name
+        return toVarName(name);
+    }
+
+    @Override
+    public String toModelName(String name) {
+        // Note: backslash ("\\") is allowed for e.g. "\\DateTime"
+        name = name.replaceAll("[^\\w\\\\]+", "_");
+
+        // remove dollar sign
+        name = name.replaceAll("$", "");
+
+        // model name cannot use reserved keyword
+        if (reservedWords.contains(name)) {
+            escapeReservedWord(name); // e.g. return => _return
+        }
+
+        // camelize the model name
+        // phone_number => PhoneNumber
+        return camelize(name);
+    }
+
+    @Override
+    public String toModelFilename(String name) {
+        // should be the same as the model name
+        return toModelName(name);
+    }
+
+    @Override
+    public String toOperationId(String operationId) {
+        // throw exception if method name is empty
+        if (StringUtils.isEmpty(operationId)) {
+            throw new RuntimeException("Empty method name (operationId) not allowed");
+        }
+
+        // method name cannot use reserved keyword, e.g. return
+        if (reservedWords.contains(operationId)) {
+            throw new RuntimeException(operationId + " (reserved word) cannot be used as method name");
+        }
+
+        return camelize(sanitizeName(operationId), true);
+    }
+
+    /**
+     * Return the default value of the property
+     *
+     * @param p Swagger property object
+     * @return string presentation of the default value of the property
+     */
+    @Override
+    public String toDefaultValue(Property p) {
+        if (p instanceof StringProperty) {
+            StringProperty dp = (StringProperty) p;
+            if (dp.getDefault() != null) {
+                return "'" + dp.getDefault().toString() + "'";
+            }
+        } else if (p instanceof BooleanProperty) {
+            BooleanProperty dp = (BooleanProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            }
+        } else if (p instanceof DateProperty) {
+            // TODO
+        } else if (p instanceof DateTimeProperty) {
+            // TODO
+        } else if (p instanceof DoubleProperty) {
+            DoubleProperty dp = (DoubleProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            }
+        } else if (p instanceof FloatProperty) {
+            FloatProperty dp = (FloatProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            }
+        } else if (p instanceof IntegerProperty) {
+            IntegerProperty dp = (IntegerProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            }
+        } else if (p instanceof LongProperty) {
+            LongProperty dp = (LongProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -130,97 +425,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         return codeModel;
     }
 
-    @Override
-    public String toApiName(String name) {
-        if(name.length() == 0)
-            return "Default";
-        return initialCaps(name);
-    }
-
-    @Override
-    public String escapeReservedWord(String name) {
-        return "_" + name;
-    }
-
-    @Override
-    public String apiFileFolder() {
-        return outputFolder + "/" + apiPackage().replace('.', File.separatorChar);
-    }
-
-    public String modelFileFolder() {
-        return outputFolder + "/" + modelPackage().replace('.', File.separatorChar);
-    }
-
-    @Override
-    public String getTypeDeclaration(Property p) {
-        if(p instanceof ArrayProperty) {
-            ArrayProperty ap = (ArrayProperty) p;
-            Property inner = ap.getItems();
-            return getSwaggerType(p) + "[" + getTypeDeclaration(inner) + "]";
-        } else if (p instanceof MapProperty) {
-            MapProperty mp = (MapProperty) p;
-            Property inner = mp.getAdditionalProperties();
-            return getSwaggerType(p) + "[string," + getTypeDeclaration(inner) + "]";
-        }
-        String fqcn = super.getTypeDeclaration(p);
-
-        if(fqcn.contains("ApiModel")){
-            return this.toFqcnName(fqcn);
-        }
-        return fqcn;
-    }
-
-    @Override
-    public String getSwaggerType(Property p) {
-        String swaggerType = super.getSwaggerType(p);
-        String type = null;
-
-        if(typeMapping.containsKey(swaggerType)) {
-            type = typeMapping.get(swaggerType);
-
-            if(languageSpecificPrimitives.contains(type)) {
-                return type;
-            }
-        } else
-            type = swaggerType;
-
-        if(type == null)
-            return null;
-
-        return type;
-    }
-
-    public String toDefaultValue(Property p) {
-        return "null";
-    }
-
-
-    @Override
-    public String toVarName(String name) {
-        // parameter name starting with number won't compile
-        // need to escape it by appending _ at the beginning
-        if (name.matches("^[0-9]")) {
-            name = "_" + name;
-        }
-
-        return name;
-    }
-
-    @Override
-    public String toParamName(String name) {
-        // should be the same as variable name
-        return toVarName(name);
-    }
-
-    public String toFqcnName(String name){
-        return this.toNamespaceName(name) + "\\" + this.toClassName(name);
-    }
-
-    public String toClassName(String name) {
-        String[] parts = name.split("\\\\");
-        return parts[(parts.length-1)];
-    }
-
     public String toVariableName(String name) {
         char c[] = name.toCharArray();
         c[0] += 32;
@@ -230,9 +434,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     public String toNamespaceName(String name) {
 
         List<String> parts = new ArrayList(Arrays.asList(name.split("\\\\")));
-
-    //ApiModel\Subscription\Product\Product
-    //Subscription\Product
 
         parts.remove(0);
         parts.remove(parts.size()-1);
@@ -248,21 +449,9 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         return fqcn.substring(0, fqcn.length()-1);
     }
 
-    @Override
-    public String toModelName(String name) {
-        // model name cannot use reserved keyword
-        if(reservedWords.contains(name))
-            escapeReservedWord(name); // e.g. return => _return
-
-        // camelize the model name
-        // phone_number => PhoneNumber
-        return camelize(name);
-    }
-
-    @Override
-    public String toModelFilename(String name) {
-        // should be the same as the model name
-        return name.replace("\\","/").replace("ApiModel/","");
+    public String toClassName(String name) {
+        String[] parts = name.split("\\\\");
+        return parts[(parts.length-1)];
     }
 
 }
