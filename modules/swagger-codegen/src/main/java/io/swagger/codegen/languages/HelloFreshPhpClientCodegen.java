@@ -91,8 +91,8 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         modelTemplateFiles.put("model.mustache", ".php");
         apiTemplateFiles.put("api.mustache", ".php");
         embeddedTemplateDir = templateDir = "php";
-        apiPackage = invokerPackage + "\\Api";
-        modelPackage = invokerPackage + "\\Model";
+        apiPackage = invokerPackage + "\\Purpose";
+        modelPackage = invokerPackage + "\\Entity";
 
         supportingFiles.add(new SupportingFile("HelloFreshClient.mustache", packagePath + "/lib", "HelloFreshClient.php"));
         supportingFiles.add(new SupportingFile("Deserializer.php", packagePath + "/lib", "Deserializer.php"));
@@ -201,13 +201,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         }
 
         additionalProperties.put("escapedInvokerPackage", invokerPackage.replace("\\", "\\\\"));
-
-        supportingFiles.add(new SupportingFile("configuration.mustache", toPackagePath(invokerPackage, srcBasePath), "Configuration.php"));
-        supportingFiles.add(new SupportingFile("ApiClient.mustache", toPackagePath(invokerPackage, srcBasePath), "ApiClient.php"));
-        supportingFiles.add(new SupportingFile("ApiException.mustache", toPackagePath(invokerPackage, srcBasePath), "ApiException.php"));
-        supportingFiles.add(new SupportingFile("ObjectSerializer.mustache", toPackagePath(invokerPackage, srcBasePath), "ObjectSerializer.php"));
-        supportingFiles.add(new SupportingFile("composer.mustache", getPackagePath(), "composer.json"));
-        supportingFiles.add(new SupportingFile("autoload.mustache", getPackagePath(), "autoload.php"));
     }
 
     @Override
@@ -331,25 +324,44 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     @Override
     public String toModelName(String name) {
         // Note: backslash ("\\") is allowed for e.g. "\\DateTime"
-        name = name.replaceAll("[^\\w\\\\]+", "_");
-
-        // remove dollar sign
-        name = name.replaceAll("$", "");
-
-        // model name cannot use reserved keyword
-        if (reservedWords.contains(name)) {
-            escapeReservedWord(name); // e.g. return => _return
-        }
+        // name = name.replaceAll("[^\\w\\\\]+", "_");
+        //
+        // // remove dollar sign
+        // name = name.replaceAll("$", "");
+        //
+        // // model name cannot use reserved keyword
+        // if (reservedWords.contains(name)) {
+        //     escapeReservedWord(name); // e.g. return => _return
+        // }
 
         // camelize the model name
         // phone_number => PhoneNumber
-        return camelize(name);
+        return camelize(toNamespaceName(name));
+    }
+
+    public String getClassName(String name) {
+        List<String> parts = new ArrayList(Arrays.asList(name.split("\\\\")));
+
+        if (parts.size() == 1) {
+            return name;
+        }
+
+        return parts.get(parts.size() - 1);
+    }
+
+    @Override
+    public CodegenModel fromModel(String name, Model model, Map<String, Model> allDefinitions) {
+        CodegenModel codegenModel = super.fromModel(name, model, allDefinitions);
+
+        codegenModel.namespaceName = toNamespaceName(name);
+        codegenModel.classname = getClassName(name);
+
+        return codegenModel;
     }
 
     @Override
     public String toModelFilename(String name) {
-        // should be the same as the model name
-        return toModelName(name);
+        return toNamespaceName(name).replace("\\", "/").replace("HelloFresh/HelloFreshClient/Entity", "");
     }
 
     @Override
@@ -414,17 +426,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         return null;
     }
 
-    @Override
-    public CodegenModel fromModel(String name, Model model) {
-        CodegenModel codeModel = super.fromModel(name, model);
-
-        codeModel.variableName = this.toVariableName(name);
-        codeModel.classname = this.toClassName(name);
-        codeModel.namespaceName = this.toNamespaceName(name);
-
-        return codeModel;
-    }
-
     public String toVariableName(String name) {
         char c[] = name.toCharArray();
         c[0] += 32;
@@ -432,12 +433,18 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     }
 
     public String toNamespaceName(String name) {
-
         List<String> parts = new ArrayList(Arrays.asList(name.split("\\\\")));
 
+        if (parts.size() <= 2) {
+            return name;
+        }
+
+        LOGGER.info(name);
+
         parts.remove(0);
-        parts.remove(parts.size()-1);
-        parts.add(0, "Entities");
+        parts.remove(parts.size() - 1);
+        parts.remove(parts.size() - 1);
+        parts.add(0, "Entity");
         parts.add(0, "HelloFreshClient");
         parts.add(0, "HelloFresh");
 
@@ -446,12 +453,22 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
             fqcn += part+"\\";
         }
 
-        return fqcn.substring(0, fqcn.length()-1);
+        LOGGER.info(fqcn);
+
+        return fqcn.substring(0, fqcn.length() - 1);
     }
 
     public String toClassName(String name) {
         String[] parts = name.split("\\\\");
         return parts[(parts.length-1)];
+    }
+
+    @Override
+    public String toApiName(String name) {
+        if (name.length() == 0) {
+            return "Default";
+        }
+        return initialCaps(name);
     }
 
 }

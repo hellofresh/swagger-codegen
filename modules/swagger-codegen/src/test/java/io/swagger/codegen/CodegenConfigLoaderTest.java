@@ -36,22 +36,4 @@ public class CodegenConfigLoaderTest {
 
         return result;
     }
-
-    @Test(dataProvider = "codegenConfig")
-    public void testLoadByName(CodegenConfig codegenConfig) throws Exception {
-        final CodegenConfig loadedConfig = CodegenConfigLoader.forName(codegenConfig.getName());
-
-        assertEquals(loadedConfig.getClass(), codegenConfig.getClass());
-        assertEquals(loadedConfig.getName(), codegenConfig.getName());
-    }
-
-    @Test(dataProvider = "codegenConfig")
-    public void testLoadByFullQualifiedName(CodegenConfig codegenConfig) throws Exception {
-        final CodegenConfig loadedConfig = CodegenConfigLoader.forName(codegenConfig.getClass().getName());
-
-        assertEquals(loadedConfig.getClass(), codegenConfig.getClass());
-        assertEquals(loadedConfig.getName(), codegenConfig.getName());
-
-
-    }
 }
