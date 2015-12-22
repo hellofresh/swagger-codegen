@@ -17,23 +17,6 @@ class {{classname}} extends AbstractCollection
         {{/hasMore}}{{/vars}}
     ];
 
-    /**
-     * Storage of items
-     *
-     * @var array $items
-     */
-    public $items = [];
-
-    /**
-     * Create {{classname}} entity with array of keys with corresponding values
-     *
-     * @param array $data
-     */
-    public function __construct(array $data = [])
-    {
-        $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
-    }
-
 }
 {{/model}}
 {{/models}}
