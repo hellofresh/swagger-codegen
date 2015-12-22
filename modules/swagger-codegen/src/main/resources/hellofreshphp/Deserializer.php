@@ -57,6 +57,10 @@ class Deserializer
             $instance = new $className;
 
             foreach ($className::$swaggerTypes as $property => $type) {
+                if ($property === 'items') {
+                    return new $className(static::recursiveAppointance($type, $data->$property));
+                }
+
                 if (isset($data->$property)) {
                     $instance->$property = static::recursiveAppointance($type, $data->$property);
                 }
