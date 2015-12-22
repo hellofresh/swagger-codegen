@@ -20,6 +20,8 @@ abstract class AbstractCollection extends IlluminateCollection implements ModelI
      */
     public function __construct(array $data = [])
     {
-        $this->items = (array) (array_key_exists('items', $data) ? $data['items'] : []);
+        $this->items = array_key_exists('items', $data) ?
+            (array) $data['items'] :
+            [];
     }
 }
