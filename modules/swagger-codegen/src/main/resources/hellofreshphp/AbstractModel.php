@@ -5,6 +5,11 @@ namespace HelloFresh\HelloFreshClient;
 abstract class AbstractModel implements ModelInterface
 {
     /**
+     * @var array
+     */
+    public static $swaggerTypes = [];
+
+    /**
      * @param array $data
      */
     public function __construct(array $data = [])
@@ -22,7 +27,7 @@ abstract class AbstractModel implements ModelInterface
         $entity = [];
 
         foreach (self::$swaggerTypes as $name => $type) {
-            if (starts_with($name, 'HelloFresh\\HelloFreshClient\\Entities') && class_exists($name)) {
+            if (starts_with($name, 'HelloFresh\\HelloFreshClient\\Entity') && class_exists($name)) {
                 $entity[$name] = $this->$name->toArray();
             } else {
                 $entity[$name] = $this->$name;
