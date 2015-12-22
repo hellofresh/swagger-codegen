@@ -15,7 +15,7 @@ class HelloFreshResponse extends Response
     /**
      * @param AbstractModel $model
      */
-    public function setModel(ModelInterface $model)
+    public function setModel(AbstractModel $model)
     {
         $this->model = $model;
     }

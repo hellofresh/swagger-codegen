@@ -4,6 +4,7 @@ namespace HelloFresh\HelloFreshClient\Purpose;
 
 use HelloFresh\HelloFreshClient\HelloFreshClient;
 use HelloFresh\HelloFreshClient\Deserializer;
+use HelloFresh\HelloFreshClient\HelloFreshResponse;
 use HelloFresh\HelloFreshClient\AbstractHelloFreshPurpose;
 use HelloFresh\BaseClient\HttpInterface;
 
@@ -22,6 +23,7 @@ class {{classname}} extends AbstractHelloFreshPurpose
 {{/allParams}}
      *
      * @param  array $parameters
+     * @return HelloFreshResponse
      */
     public function {{nickname}}(array $parameters = [])
     {

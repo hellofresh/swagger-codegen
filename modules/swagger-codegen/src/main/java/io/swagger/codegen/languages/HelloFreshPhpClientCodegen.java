@@ -7,6 +7,9 @@ import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
 import io.swagger.codegen.SupportingFile;
 import io.swagger.codegen.CodegenModel;
+import io.swagger.codegen.CodegenOperation;
+import io.swagger.models.Operation;
+import io.swagger.models.Swagger;
 import io.swagger.models.Model;
 import io.swagger.models.properties.*;
 
@@ -30,7 +33,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     protected String invokerPackage = "HelloFresh\\HelloFreshClient";
     protected String composerVendorName = "swagger";
     protected String composerProjectName = "swagger-client";
-    protected String packagePath = "SwaggerClient-php";
+    protected String packagePath = "HelloFreshPhpClient-php";
     protected String artifactVersion = "1.0.0";
     protected String srcBasePath = "lib";
     protected String variableNamingConvention= "snake_case";
@@ -292,6 +295,15 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     }
 
     @Override
+    public CodegenOperation fromOperation(String path, String httpMethod, Operation operation, Map<String, Model> definitions, Swagger swagger) {
+        CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions, swagger);
+
+        op.lcHttpMethod = httpMethod.toLowerCase();
+
+        return op;
+    }
+
+    @Override
     public String toVarName(String name) {
         // sanitize name
         name = sanitizeName(name);
@@ -361,7 +373,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     @Override
     public String toModelFilename(String name) {
-        return toNamespaceName(name).replace("\\", "/").replace("HelloFresh/HelloFreshClient/Entity", "");
+        return toNamespaceFolder(name).replace("\\", "/").replace("HelloFresh/HelloFreshClient/Entity", "");
     }
 
     @Override
@@ -432,14 +444,33 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         return new String(c);
     }
 
-    public String toNamespaceName(String name) {
+    public String toNamespaceFolder(String name) {
         List<String> parts = new ArrayList(Arrays.asList(name.split("\\\\")));
 
         if (parts.size() <= 2) {
             return name;
         }
 
-        LOGGER.info(name);
+        parts.remove(0);
+        parts.remove(parts.size() - 1);
+        parts.add(0, "Entity");
+        parts.add(0, "HelloFreshClient");
+        parts.add(0, "HelloFresh");
+
+        String fqcn = "";
+        for(String part: parts) {
+            fqcn += part+"\\";
+        }
+
+        return fqcn.substring(0, fqcn.length() - 1);
+    }
+
+    public String toNamespaceName(String name) {
+        List<String> parts = new ArrayList(Arrays.asList(name.split("\\\\")));
+
+        if (parts.size() <= 2) {
+            return name;
+        }
 
         parts.remove(0);
         parts.remove(parts.size() - 1);
@@ -452,8 +483,6 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         for(String part: parts) {
             fqcn += part+"\\";
         }
-
-        LOGGER.info(fqcn);
 
         return fqcn.substring(0, fqcn.length() - 1);
     }
