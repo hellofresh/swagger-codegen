@@ -300,6 +300,11 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
 
         op.lcHttpMethod = httpMethod.toLowerCase();
 
+        if (op.httpMethod.equals("GET") && String.valueOf(op.path.charAt(op.path.length() - 1)) != "}") {
+            LOGGER.info("################# returnType wollah");
+            op.returnType += "Collection";
+        }
+
         return op;
     }
 
@@ -336,19 +341,33 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     @Override
     public String toModelName(String name) {
         // Note: backslash ("\\") is allowed for e.g. "\\DateTime"
-        // name = name.replaceAll("[^\\w\\\\]+", "_");
-        //
-        // // remove dollar sign
-        // name = name.replaceAll("$", "");
-        //
-        // // model name cannot use reserved keyword
-        // if (reservedWords.contains(name)) {
-        //     escapeReservedWord(name); // e.g. return => _return
-        // }
+        name = name.replaceAll("[^\\w\\\\]+", "_");
+
+        // remove dollar sign
+        name = name.replaceAll("$", "");
+
+        // model name cannot use reserved keyword
+        if (reservedWords.contains(name)) {
+            escapeReservedWord(name); // e.g. return => _return
+        }
 
         // camelize the model name
         // phone_number => PhoneNumber
-        return camelize(toNamespaceName(name));
+        List<String> parts = new ArrayList(Arrays.asList(name.split("\\\\")));
+
+        if (parts.size() <= 2) {
+            return camelize(name);
+        }
+
+        parts.remove(0);
+        parts.remove(1);
+
+        String fqcn = "";
+        for(String part: parts) {
+            fqcn += part+"\\";
+        }
+
+        return fqcn.substring(0, fqcn.length() - 1);
     }
 
     public String getClassName(String name) {

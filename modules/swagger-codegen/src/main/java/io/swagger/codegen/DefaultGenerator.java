@@ -194,9 +194,16 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
                         for (String templateName : config.modelTemplateFiles().keySet()) {
                             String suffix = config.modelTemplateFiles().get(templateName);
                             String filename = config.modelFileFolder() + File.separator + config.toModelFilename(name) + suffix;
+
+                            if (name.endsWith("Collection")) {
+                                templateName = "collection.mustache";
+                                filename = filename.replace(".php", "Collection.php");
+                            }
+
                             if (!config.shouldOverwrite(filename)) {
                                 continue;
                             }
+
                             String templateFile = getFullTemplateFile(config, templateName);
                             String template = readTemplate(templateFile);
                             Template tmpl = Mustache.compiler()
@@ -519,7 +526,7 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
                 tags = new ArrayList<String>();
                 tags.add("default");
             }
-            
+
             /*
              build up a set of parameter "ids" defined at the operation level
              per the swagger 2.0 spec "A unique parameter is defined by a combination of a name and location"

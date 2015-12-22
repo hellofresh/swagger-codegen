@@ -4,40 +4,14 @@ namespace HelloFresh\HelloFreshClient;
 
 use HelloFresh\BaseClient\Client;
 use HelloFresh\HelloFreshClient\Purpose;
-use HelloFresh\HelloFreshClient\Entities\Authentication\Authentication;
+use HelloFresh\HelloFreshClient\Entity\Authentication;
 use GuzzleHttp\Message\ResponseInterface;
 use HelloFresh\BaseClient\Auth\Auth;
 use HelloFresh\BaseClient\Auth\AccessToken;
 use HelloFresh\BaseClient\Exception\AccessTokenExpiredException;
 
-/**
- * @property-read Purpose\Allergens $allergens
- * @property-read Purpose\Products $products
- * @property-read Purpose\Recipients $recipients
- * @property-read Purpose\Subscriptions $subscriptions
- * @property-read Purpose\Customersidreferrals $customersidreferrals
- * @property-read Purpose\Nutritions $nutritions
- * @property-read Purpose\Ratings $ratings
- * @property-read Purpose\Addresses $addresses
- * @property-read Purpose\Presets $presets
- * @property-read Purpose\Cuisines $cuisines
- * @property-read Purpose\Jobs $jobs
- * @property-read Purpose\Test $test
- * @property-read Purpose\Auth $auth
- * @property-read Purpose\Configurations $configurations
- * @property-read Purpose\Tags $tags
- * @property-read Purpose\Shops $shops
- * @property-read Purpose\Ingredients $ingredients
- * @property-read Purpose\Freebies $freebies
- * @property-read Purpose\Ingredientfamilies $ingredientfamilies
- * @property-read Purpose\Utensils $utensils
- * @property-read Purpose\Deliveryoptions $deliveryoptions
- * @property-read Purpose\Customers $customers
- * @property-read Purpose\Productfamilies $productfamilies
- * @property-read Purpose\Menus $menus
- * @property-read Purpose\Recipes $recipes
- * @property-read Purpose\Clubs $clubs
- * @property-read Purpose\Favorites $favorites
+/**{{#apiInfo}}{{#apis}}{{#operations}}
+ * @property-read Purpose\{{classname}} ${{classVarName}}{{/operations}}{{/apis}}{{/apiInfo}}
  */
 class HelloFreshClient extends Client
 {
@@ -61,15 +35,17 @@ class HelloFreshClient extends Client
      protected function handleException($clientMethod, array $clientArguments, \Exception $e)
      {
          if ($e instanceof AccessTokenExpiredException) {
-             $refreshToken = $this->authProvider->getRefreshToken();
+             $auth = $this->authProvider->getAuth();
 
-             $this->authProvider->refreshAuth();
+             $refreshToken = $auth->getRefreshToken();
 
-             if ($refreshToken) {
+             $this->authProvider->removeAuth();
+
+             if (!empty($refreshToken)) {
                  $response = $this->auth->renewToken([
                      'grant_type' => 'refresh_token',
-                     'refresh_token' => $refreshToken,
-                     'scope' => 'public,customer',
+                     'refresh_token' => $auth->getRefreshToken(),
+                     'scope' => $this->authProvider->getScope(),
                  ]);
 
                  $authModel = $response->getModel();
@@ -77,13 +53,11 @@ class HelloFreshClient extends Client
                  if ($authModel instanceof Authentication) {
                      $auth = new Auth(
                          $authModel->token_type,
-                         new AccessToken($authModel->access_token, $authModel->expires_in)
-                     );
-
-                     $this->authProvider->refreshAuth(
-                         $auth,
+                         new AccessToken($authModel->access_token, $authModel->expires_in),
                          $authModel->refresh_token
                      );
+
+                     $this->authProvider->refreshAuth($auth);
 
                      return $this->handleClientMethod($clientMethod, $clientArguments);
                  }

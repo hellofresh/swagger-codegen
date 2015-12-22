@@ -8,20 +8,20 @@ use HelloFresh\HelloFreshClient\ModelInterface;
 class HelloFreshResponse extends Response
 {
     /**
-     * @var AbstractModel
+     * @var ModelInterface
      */
     protected $model;
 
     /**
-     * @param AbstractModel $model
+     * @param ModelInterface $model
      */
-    public function setModel(AbstractModel $model)
+    public function setModel(ModelInterface $model)
     {
         $this->model = $model;
     }
 
     /**
-     * @return AbstractModel
+     * @return ModelInterface
      */
     public function getModel()
     {

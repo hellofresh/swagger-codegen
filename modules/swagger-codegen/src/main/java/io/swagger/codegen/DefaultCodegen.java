@@ -1596,6 +1596,7 @@ public class DefaultCodegen {
             }
             p.paramName = toParamName(bp.getName());
         }
+
         return p;
     }
 

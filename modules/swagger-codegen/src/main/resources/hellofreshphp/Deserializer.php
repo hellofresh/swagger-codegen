@@ -23,7 +23,7 @@ class Deserializer
     /**
      * @param  string            $fqcn
      * @param  ResponseInterface $response
-     * @return \Illuminate\Support\Contracts\ArrayableInterface|null
+     * @return ModelInterface
      */
     public static function deserialize($fqcn, HelloFreshResponse $response)
     {
@@ -33,7 +33,7 @@ class Deserializer
     /**
      * @param  string $className
      * @param  stdClass $data
-     * @return \Illuminate\Support\Contracts\ArrayableInterface
+     * @return ModelInterface
      */
     protected static function recursiveAppointance($className, $data)
     {
