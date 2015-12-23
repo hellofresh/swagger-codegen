@@ -22,7 +22,7 @@ class Deserializer
 
     /**
      * @param  string            $fqcn
-     * @param  ResponseInterface $response
+     * @param  HelloFreshResponse $response
      * @return ModelInterface
      */
     public static function deserialize($fqcn, HelloFreshResponse $response)

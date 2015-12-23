@@ -3,7 +3,6 @@
 namespace HelloFresh\HelloFreshClient;
 
 use HelloFresh\BaseClient\Response;
-use HelloFresh\HelloFreshClient\ModelInterface;
 
 class HelloFreshResponse extends Response
 {
