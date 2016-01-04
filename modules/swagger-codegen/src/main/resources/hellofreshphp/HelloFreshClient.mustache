@@ -22,6 +22,11 @@ class HelloFreshClient extends Client implements HelloFreshClientInterface
     const DEFAULT_USER_AGENT = 'HelloFreshClient';
 
     /**
+     * Define the model to use to unserialize a response.
+     */
+    const RESPONSE_MODEL = '#hf_response_model;
+
+    /**
     * @param  ResponseInterface $response
     * @return HelloFreshResponse
     */
@@ -140,4 +145,41 @@ class HelloFreshClient extends Client implements HelloFreshClientInterface
         return $this->forwardHttpMethod(__FUNCTION__, [ $request ]);
     }
 
+    /**
+     * @inheritdoc
+     */
+    protected function forwardHttpMethod($method, $arguments)
+    {
+        $model = null;
+
+        if ($method !== 'send') {
+            list($url, $options) = $arguments;
+
+            if (isset($arguments[self::RESPONSE_MODEL])) {
+                $model = $arguments[self::RESPONSE_MODEL];
+                unset($arguments[self::RESPONSE_MODEL]);
+            }
+        }
+
+        $response = parent::forwardHttpMethod($method, $arguments);
+
+        if ($model) {
+            $response->setModel($this->unserialize($model, $response);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Unserialize a response into a model
+     *
+     * @param string $modelClass The class of the model to instantiate.
+     * @param HelloFreshResponseInterface $response The response to unserialize
+     *
+     * @return mixed
+     */
+    protected function unserialize($modelClass, HelloFreshResponseInterface $response)
+    {
+        return Deserializer::deserialize($modelClass, $response);
+    }
 }
