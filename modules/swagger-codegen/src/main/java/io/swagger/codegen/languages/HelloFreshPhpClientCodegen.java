@@ -104,6 +104,8 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         supportingFiles.add(new SupportingFile("AbstractHelloFreshPurpose.php", packagePath + "/lib", "AbstractHelloFreshPurpose.php"));
         supportingFiles.add(new SupportingFile("AbstractCollection.php", packagePath + "/lib", "AbstractCollection.php"));
         supportingFiles.add(new SupportingFile("ModelInterface.php", packagePath + "/lib", "ModelInterface.php"));
+        supportingFiles.add(new SupportingFile("HelloFreshClientInterface.php", packagePath + "/lib", "HelloFreshClientInterface.php"));
+        supportingFiles.add(new SupportingFile("HelloFreshResponseInterface.php", packagePath + "/lib", "HelloFreshResponseInterface.php"));
     }
 
     public String getPackagePath() {
