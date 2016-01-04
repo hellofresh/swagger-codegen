@@ -39,8 +39,8 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     String packagePath = invokerPackage + "-php";
 
-    modelPackage = packagePath + "/lib/Entities";
-    apiPackage = packagePath + "/lib";
+    modelPackage = packagePath + "/lib/Entity";
+    apiPackage = packagePath + "/lib/Purpose";
     outputFolder = "generated-code/hellofreshphp";
     modelTemplateFiles.put("model.mustache", ".php");
     apiTemplateFiles.put("api.mustache", ".php");
@@ -73,19 +73,15 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     typeMapping.put("List", "array");
     typeMapping.put("map", "map");
 
-    supportingFiles.add(new SupportingFile("Http/CurlClient.php", packagePath + "/lib/Http", "CurlClient.php"));
-    supportingFiles.add(new SupportingFile("Http/GuzzleClient.php", packagePath + "/lib/Http", "GuzzleClient.php"));
-    supportingFiles.add(new SupportingFile("Http/HelloFreshCurl.php", packagePath + "/lib/Http", "HelloFreshCurl.php"));
-    supportingFiles.add(new SupportingFile("Http/Httpable.php", packagePath + "/lib/Http", "Httpable.php"));
-
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshClientException.php", packagePath + "/lib/Exception", "HelloFreshClientException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshException.php", packagePath + "/lib/Exception", "HelloFreshException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshRequestException.php", packagePath + "/lib/Exception", "HelloFreshRequestException.php"));
-    supportingFiles.add(new SupportingFile("Exception/HelloFreshParameterException.php", packagePath + "/lib/Exception", "HelloFreshParameterException.php"));
-
-    supportingFiles.add(new SupportingFile("HelloFreshModelResponse.php", packagePath + "/lib", "HelloFreshModelResponse.php"));
-    supportingFiles.add(new SupportingFile("HelloFreshRequest.php", packagePath + "/lib", "HelloFreshRequest.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshClient.mustache", packagePath + "/lib", "HelloFreshClient.php"));
+    supportingFiles.add(new SupportingFile("Deserializer.php", packagePath + "/lib", "Deserializer.php"));
+    supportingFiles.add(new SupportingFile("AbstractModel.php", packagePath + "/lib", "AbstractModel.php"));
     supportingFiles.add(new SupportingFile("HelloFreshResponse.php", packagePath + "/lib", "HelloFreshResponse.php"));
+    supportingFiles.add(new SupportingFile("AbstractHelloFreshPurpose.php", packagePath + "/lib", "AbstractHelloFreshPurpose.php"));
+    supportingFiles.add(new SupportingFile("AbstractCollection.php", packagePath + "/lib", "AbstractCollection.php"));
+    supportingFiles.add(new SupportingFile("ModelInterface.php", packagePath + "/lib", "ModelInterface.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshClientInterface.php", packagePath + "/lib", "HelloFreshClientInterface.php"));
+    supportingFiles.add(new SupportingFile("HelloFreshResponseInterface.php", packagePath + "/lib", "HelloFreshResponseInterface.php"));
   }
 
   public Map<String, String> testTemplateFiles() {
@@ -201,9 +197,8 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
 
     parts.remove(0);
     parts.remove(parts.size()-1);
-    parts.add(0, "Entities");
-    parts.add(0, "PhpClient");
-    parts.add(0, "Api");
+    parts.add(0, "Entity");
+    parts.add(0, "HelloFreshClient");
     parts.add(0, "HelloFresh");
 
     String fqcn = "";
@@ -212,6 +207,15 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     }
 
     return fqcn.substring(0, fqcn.length()-1);
+  }
+
+  @Override
+  public CodegenOperation fromOperation(String path, String httpMethod, Operation operation, Map<String, Model> definitions) {
+      CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions);
+
+      op.lcHttpMethod = httpMethod.toLowerCase();
+
+      return op;
   }
 
   @Override
