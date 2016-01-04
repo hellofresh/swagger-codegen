@@ -4,7 +4,7 @@ namespace HelloFresh\HelloFreshClient;
 
 use HelloFresh\BaseClient\Response;
 
-class HelloFreshResponse extends Response
+class HelloFreshResponse extends Response implements HelloFreshResponseInterface
 {
     /**
      * @var ModelInterface
@@ -12,7 +12,7 @@ class HelloFreshResponse extends Response
     protected $model;
 
     /**
-     * @param ModelInterface $model
+     * @inheritdoc
      */
     public function setModel(ModelInterface $model)
     {
@@ -20,7 +20,7 @@ class HelloFreshResponse extends Response
     }
 
     /**
-     * @return ModelInterface
+     * @inheritdoc
      */
     public function getModel()
     {
