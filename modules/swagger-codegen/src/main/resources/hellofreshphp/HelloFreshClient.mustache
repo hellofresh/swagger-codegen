@@ -12,9 +12,9 @@ use HelloFresh\BaseClient\Exception\AccessTokenExpiredException;
 use GuzzleHttp\Message\RequestInterface;
 
 /**{{#apiInfo}}{{#apis}}{{#operations}}
- * @property-read Purpose\{{classname}} ${{classVarName}}{{/operations}}{{/apis}}{{/apiInfo}}
- */
-class HelloFreshClient extends Client
+* @property-read Purpose\{{classname}} ${{classVarName}}{{/operations}}{{/apis}}{{/apiInfo}}
+*/
+class HelloFreshClient implements HelloFreshClientInterface extends Client
 {
     const DEFAULT_BASE_URL = 'https://api-{version}.hellofresh.com';
     const DEFAULT_BASE_VERSION = 'v2';
@@ -22,121 +22,122 @@ class HelloFreshClient extends Client
     const DEFAULT_USER_AGENT = 'HelloFreshClient';
 
     /**
-     * @param  ResponseInterface $response
-     * @return HelloFreshResponse
-     */
+    * @param  ResponseInterface $response
+    * @return HelloFreshResponse
+    */
     protected function decorateResponse(ResponseInterface $response)
     {
         return new HelloFreshResponse($response);
     }
 
     /**
+    * @inheritdoc
+    */
+    protected function handleException($clientMethod, array $clientArguments, \Exception $e)
+    {
+        if ($e instanceof AccessTokenExpiredException) {
+            $auth = $this->authProvider->getAuth();
+
+            $refreshToken = $auth->getRefreshToken();
+
+            $this->authProvider->removeAuth();
+
+            if (!empty($refreshToken)) {
+                $response = $this->auth->renewToken([
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $auth->getRefreshToken(),
+                    'scope' => $this->authProvider->getScope(),
+                ]);
+
+                $authModel = $response->getModel();
+
+                if ($authModel instanceof Authentication) {
+                    $auth = new Auth(
+                        $authModel->token_type,
+                        new AccessToken($authModel->access_token, $authModel->expires_in),
+                        $authModel->refresh_token
+                    );
+
+                    $this->authProvider->refreshAuth($auth);
+
+                    return $this->handleClientMethod($clientMethod, $clientArguments);
+                }
+            }
+        }
+
+        return parent::handleException($clientMethod, $clientArguments, $e);
+    }
+
+    /**
      * @inheritdoc
      */
-     protected function handleException($clientMethod, array $clientArguments, \Exception $e)
-     {
-         if ($e instanceof AccessTokenExpiredException) {
-             $auth = $this->authProvider->getAuth();
+    public function createRequest($method, $url = null, array $options = [])
+    {
+        return $this->client->createRequest($method, $url, $options);
+    }
 
-             $refreshToken = $auth->getRefreshToken();
+    /**
+     * @inheritdoc
+     */
+    public function get($url = null, $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-             $this->authProvider->removeAuth();
+    /**
+     * @inheritdoc
+     */
+    public function head($url = null, array $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-             if (!empty($refreshToken)) {
-                 $response = $this->auth->renewToken([
-                     'grant_type' => 'refresh_token',
-                     'refresh_token' => $auth->getRefreshToken(),
-                     'scope' => $this->authProvider->getScope(),
-                 ]);
+    /**
+     * @inheritdoc
+     */
+    public function delete($url = null, array $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-                 $authModel = $response->getModel();
+    /**
+     * @inheritdoc
+     */
+    public function put($url = null, array $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-                 if ($authModel instanceof Authentication) {
-                     $auth = new Auth(
-                         $authModel->token_type,
-                         new AccessToken($authModel->access_token, $authModel->expires_in),
-                         $authModel->refresh_token
-                     );
+    /**
+     * @inheritdoc
+     */
+    public function patch($url = null, array $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-                     $this->authProvider->refreshAuth($auth);
+    /**
+     * @inheritdoc
+     */
+    public function post($url = null, array $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-                     return $this->handleClientMethod($clientMethod, $clientArguments);
-                 }
-             }
-         }
+    /**
+     * @inheritdoc
+     */
+    public function options($url = null, array $options = [])
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+    }
 
-         return parent::handleException($clientMethod, $clientArguments, $e);
-     }
+    /**
+     * @inheritdoc
+     */
+    public function send(RequestInterface $request)
+    {
+        return $this->forwardHttpMethod(__FUNCTION__, [ $request ]);
+    }
 
-      /**
-       * @inheritdoc
-       */
-      public function createRequest($method, $url = null, array $options = [])
-      {
-          return $this->client->createRequest($method, $url, $options);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function get($url = null, $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function head($url = null, array $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function delete($url = null, array $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function put($url = null, array $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function patch($url = null, array $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function post($url = null, array $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function options($url = null, array $options = [])
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
-      }
-
-      /**
-       * @inheritdoc
-       */
-      public function send(RequestInterface $request)
-      {
-          return $this->forwardHttpMethod(__FUNCTION__, [ $request ]);
-      }
 }
