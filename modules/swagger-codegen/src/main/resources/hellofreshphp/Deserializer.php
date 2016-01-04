@@ -32,7 +32,7 @@ class Deserializer
 
     /**
      * @param  string $className
-     * @param  stdClass $data
+     * @param  object $data
      * @return ModelInterface
      */
     protected static function recursiveAppointance($className, $data)
@@ -54,6 +54,8 @@ class Deserializer
 
             $data = $value;
         } elseif (class_exists($className)) {
+            /* @var $className \HelloFresh\HelloFreshClient\AbstractModel */
+
             $instance = new $className;
 
             foreach ($className::$swaggerTypes as $property => $type) {
