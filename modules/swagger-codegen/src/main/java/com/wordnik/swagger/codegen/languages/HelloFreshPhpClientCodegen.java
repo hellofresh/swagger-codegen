@@ -82,6 +82,11 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     supportingFiles.add(new SupportingFile("ModelInterface.php", packagePath + "/lib", "ModelInterface.php"));
     supportingFiles.add(new SupportingFile("HelloFreshClientInterface.php", packagePath + "/lib", "HelloFreshClientInterface.php"));
     supportingFiles.add(new SupportingFile("HelloFreshResponseInterface.php", packagePath + "/lib", "HelloFreshResponseInterface.php"));
+    supportingFiles.add(new SupportingFile("DeserializerInterface.php", packagePath + "/lib", "DeserializerInterface.php"));
+    supportingFiles.add(new SupportingFile("SwaggerTypesResolver.php", packagePath + "/lib", "SwaggerTypesResolver.php"));
+    supportingFiles.add(new SupportingFile("TypesResolverInterface.php", packagePath + "/lib", "TypesResolverInterface.php"));
+    supportingFiles.add(new SupportingFile("Exception/HelloFreshClientException.php", packagePath + "/lib/Exception", "HelloFreshClientException.php"));
+    supportingFiles.add(new SupportingFile("Exception/MissingClassException.php", packagePath + "/lib/Exception", "MissingClassException.php"));
   }
 
   public Map<String, String> testTemplateFiles() {
