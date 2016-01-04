@@ -2,7 +2,7 @@
 
 namespace HelloFresh\HelloFreshClient;
 
-use HelloFresh\BaseClient\ResponseInterface;
+use GuzzleHttp\Message\ResponseInterface;
 
 interface HelloFreshResponseInterface extends ResponseInterface
 {
