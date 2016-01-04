@@ -15,26 +15,26 @@ abstract class AbstractModel implements ModelInterface
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
-            $this[$key] = $value;
+            $this->$key = $value;
         }
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function toArray()
     {
-        $entity = [];
+        $entityArray = [];
 
-        foreach (self::$swaggerTypes as $name => $type) {
-            if (starts_with($name, 'HelloFresh\\HelloFreshClient\\Entity') && class_exists($name)) {
-                $entity[$name] = $this->$name->toArray();
+        foreach (static::$swaggerTypes as $name => $type) {
+            if ($this->$name instanceof ModelInterface) {
+                $entityArray[$name] = $this->$name->toArray();
             } else {
-                $entity[$name] = $this->$name;
+                $entityArray[$name] = $this->$name;
             }
         }
 
-        return $entity;
+        return $entityArray;
     }
 
     /**

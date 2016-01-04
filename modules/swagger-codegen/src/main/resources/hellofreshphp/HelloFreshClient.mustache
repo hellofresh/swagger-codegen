@@ -9,6 +9,7 @@ use GuzzleHttp\Message\ResponseInterface;
 use HelloFresh\BaseClient\Auth\Auth;
 use HelloFresh\BaseClient\Auth\AccessToken;
 use HelloFresh\BaseClient\Exception\AccessTokenExpiredException;
+use GuzzleHttp\Message\RequestInterface;
 
 /**{{#apiInfo}}{{#apis}}{{#operations}}
  * @property-read Purpose\{{classname}} ${{classVarName}}{{/operations}}{{/apis}}{{/apiInfo}}
@@ -30,7 +31,7 @@ class HelloFreshClient extends Client
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      */
      protected function handleException($clientMethod, array $clientArguments, \Exception $e)
      {
@@ -66,4 +67,76 @@ class HelloFreshClient extends Client
 
          return parent::handleException($clientMethod, $clientArguments, $e);
      }
+
+      /**
+       * @inheritdoc
+       */
+      public function createRequest($method, $url = null, array $options = [])
+      {
+          return $this->client->createRequest($method, $url, $options);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function get($url = null, $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function head($url = null, array $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function delete($url = null, array $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function put($url = null, array $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function patch($url = null, array $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function post($url = null, array $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function options($url = null, array $options = [])
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $url, $options ]);
+      }
+
+      /**
+       * @inheritdoc
+       */
+      public function send(RequestInterface $request)
+      {
+          return $this->forwardHttpMethod(__FUNCTION__, [ $request ]);
+      }
 }
