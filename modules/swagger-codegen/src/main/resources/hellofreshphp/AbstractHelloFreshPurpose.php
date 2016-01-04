@@ -11,6 +11,11 @@ abstract class AbstractHelloFreshPurpose extends AbstractPurpose
     const PARAM_CLIENT_SECRET = 'client_secret';
 
     /**
+     * @var HelloFreshClientInterface
+     */
+    protected $client;
+
+    /**
      * @param  array  $parameters
      */
     public function attachClientCredentials(array &$parameters)
