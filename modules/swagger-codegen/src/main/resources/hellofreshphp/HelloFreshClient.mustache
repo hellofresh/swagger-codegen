@@ -14,7 +14,7 @@ use GuzzleHttp\Message\RequestInterface;
 /**{{#apiInfo}}{{#apis}}{{#operations}}
 * @property-read Purpose\{{classname}} ${{classVarName}}{{/operations}}{{/apis}}{{/apiInfo}}
 */
-class HelloFreshClient implements HelloFreshClientInterface extends Client
+class HelloFreshClient extends Client implements HelloFreshClientInterface
 {
     const DEFAULT_BASE_URL = 'https://api-{version}.hellofresh.com';
     const DEFAULT_BASE_VERSION = 'v2';
