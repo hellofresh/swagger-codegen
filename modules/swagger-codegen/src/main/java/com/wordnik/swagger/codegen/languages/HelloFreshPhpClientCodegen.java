@@ -140,8 +140,13 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
     String fqcn = super.getTypeDeclaration(p);
 
     if(fqcn.contains("ApiModel")){
-      return this.toFqcnName(fqcn);
+      fqcn = this.toFqcnName(fqcn);
     }
+
+    if (Character.isUpperCase(fqcn.charAt(0))) {
+      fqcn = "\\" + fqcn;
+    }
+
     return fqcn;
   }
 
@@ -173,6 +178,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
       swaggerType = r.get$ref();
       if(swaggerType.indexOf("#/definitions/") == 0)
         swaggerType = swaggerType.substring("#/definitions/".length());
+
     }
     else {
       if(p != null) swaggerType = p.getType();
@@ -189,6 +195,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
       type = swaggerType;
     if(type == null)
       return null;
+
     return type;
   }
 
@@ -215,7 +222,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
   }
 
   public String toFqcnName(String name){
-    return "\\" + this.toNamespaceName(name) + "\\" + this.toClassName(name);
+    return this.toNamespaceName(name) + "\\" + this.toClassName(name);
   }
 
   public String toClassName(String name) {
