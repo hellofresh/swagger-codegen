@@ -215,7 +215,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
   }
 
   public String toFqcnName(String name){
-    return this.toNamespaceName(name) + "\\" + this.toClassName(name);
+    return "\\" + this.toNamespaceName(name) + "\\" + this.toClassName(name);
   }
 
   public String toClassName(String name) {
@@ -241,7 +241,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         fqcn += part+"\\";
     }
 
-    return "\\" + fqcn.substring(0, fqcn.length()-1);
+    return fqcn.substring(0, fqcn.length()-1);
   }
 
   @Override
