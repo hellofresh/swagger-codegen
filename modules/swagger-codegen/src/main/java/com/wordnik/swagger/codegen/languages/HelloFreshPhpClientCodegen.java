@@ -147,7 +147,37 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
 
   @Override
   public String getSwaggerType(Property p) {
-    String swaggerType = super.getSwaggerType(p);
+    String swaggerType = null;
+    if(p instanceof StringProperty)
+      swaggerType = "string";
+    else if (p instanceof BooleanProperty)
+      swaggerType = "boolean";
+    else if(p instanceof DateProperty)
+      swaggerType = "date";
+    else if(p instanceof DateTimeProperty)
+      swaggerType = "DateTime";
+    else if (p instanceof DoubleProperty)
+      swaggerType = "double";
+    else if (p instanceof FloatProperty)
+      swaggerType = "float";
+    else if (p instanceof IntegerProperty)
+      swaggerType = "integer";
+    else if (p instanceof LongProperty)
+      swaggerType = "long";
+    else if (p instanceof MapProperty)
+      swaggerType = "map";
+    else if (p instanceof DecimalProperty)
+      swaggerType = "number";
+    else if (p instanceof RefProperty) {
+      RefProperty r = (RefProperty)p;
+      swaggerType = r.get$ref();
+      if(swaggerType.indexOf("#/definitions/") == 0)
+        swaggerType = swaggerType.substring("#/definitions/".length());
+    }
+    else {
+      if(p != null) swaggerType = p.getType();
+    }
+
     String type = null;
     if(typeMapping.containsKey(swaggerType)) {
       type = typeMapping.get(swaggerType);
@@ -211,7 +241,7 @@ public class HelloFreshPhpClientCodegen extends DefaultCodegen implements Codege
         fqcn += part+"\\";
     }
 
-    return fqcn.substring(0, fqcn.length()-1);
+    return "\\" + fqcn.substring(0, fqcn.length()-1);
   }
 
   @Override
