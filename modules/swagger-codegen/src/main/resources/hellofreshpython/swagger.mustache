@@ -4,19 +4,16 @@ server communication, and is invariant across implementations. Specifics of
 the methods and models for each application are generated from the Swagger
 templates."""
 
-import sys
-import os
 import re
-import urllib
-import urllib2
-import httplib
+from urllib.parse import urlencode
+from urllib.request import urlopen, Request
 import json
 import datetime
 import mimetypes
 import random
 import string
 
-from models import *
+from .models import *
 
 
 class ApiClient(object):
@@ -58,7 +55,7 @@ class ApiClient(object):
         mergedHeaderParams.update(headerParams)
         headers = {}
         if mergedHeaderParams:
-            for param, value in mergedHeaderParams.iteritems():
+            for param, value in mergedHeaderParams.items():
                 headers[param] = ApiClient.sanitizeForSerialization(value)
 
         if self.cookie:
@@ -72,7 +69,7 @@ class ApiClient(object):
             for param, value in queryParams.items():
                 if value is not None:
                     sentQueryParams[param] = ApiClient.sanitizeForSerialization(value)
-            url = url + '?' + urllib.urlencode(sentQueryParams)
+            url = url + '?' + urlencode(sentQueryParams)
 
         if method in ['GET']:
             # Options to add statements later on and for compatibility
@@ -89,7 +86,7 @@ class ApiClient(object):
                     headers['Content-Type'] = 'multipart/form-data; boundary={0}'.format(self.boundary)
                     headers['Content-length'] = str(len(data))
                 else:
-                    data = urllib.urlencode(postData)
+                    data = urlencode(postData)
 
         else:
             raise Exception('Method ' + method + ' is not recognized.')
@@ -98,7 +95,7 @@ class ApiClient(object):
                                 data=data)
 
         # Make the request
-        response = urllib2.urlopen(request)
+        response = urlopen(request)
         if 'Set-Cookie' in response.headers:
             self.cookie = response.headers['Set-Cookie']
         string = response.read()
@@ -128,7 +125,7 @@ class ApiClient(object):
         Sanitize an object for Request.
 
         If obj is None, return None.
-        If obj is str, int, long, float, bool, return directly.
+        If obj is str, int, float, bool, return directly.
         If obj is datetime.datetime, datetime.date convert to string in iso8601 format.
         If obj is list, santize each element in the list.
         If obj is dict, return the dict.
@@ -136,7 +133,7 @@ class ApiClient(object):
         """
         if isinstance(obj, type(None)):
             return None
-        elif isinstance(obj, (str, int, long, float, bool, file)):
+        elif isinstance(obj, (str, int, float, bool)):
             return obj
         elif isinstance(obj, list):
             return [ApiClient.sanitizeForSerialization(subObj) for subObj in obj]
@@ -150,10 +147,10 @@ class ApiClient(object):
                 # and attributes which value is not None.
                 # Convert attribute name to json key in model definition for request.
                 objDict = {obj.attributeMap[key]: val
-                           for key, val in obj.__dict__.iteritems()
+                           for key, val in obj.__dict__.items()
                            if key != 'swaggerTypes' and key != 'attributeMap' and val is not None}
             return {key: ApiClient.sanitizeForSerialization(val)
-                    for (key, val) in objDict.iteritems()}
+                    for (key, val) in objDict.items()}
 
     def buildMultipartFormData(self, postData, files):
         def escape_quotes(s):
@@ -217,28 +214,28 @@ class ApiClient(object):
                 subClass = match.group(1)
                 return [self.deserialize(subObj, subClass) for subObj in obj]
 
-            if (objClass in ['int', 'float', 'long', 'dict', 'list', 'str', 'bool', 'datetime']):
+            if (objClass in ['int', 'float', 'dict', 'list', 'str', 'bool', 'datetime']):
                 objClass = eval(objClass)
             else:  # not a native type, must be model class
                 objClass = objClass.rpartition('\\')[2]
                 objClass = eval(objClass + '.' + objClass)
 
-        if objClass in [int, long, float, dict, list, str, bool]:
+        if objClass in [int, float, dict, list, str, bool]:
             return objClass(obj)
         elif objClass == datetime:
             return self.__parse_string_to_datetime(obj)
 
         instance = objClass()
 
-        for attr, attrType in instance.swaggerTypes.iteritems():
+        for attr, attrType in instance.swaggerTypes().items():
             if obj is not None and instance.attributeMap[attr] in obj and type(obj) in [list, dict]:
                 value = obj[instance.attributeMap[attr]]
-                if attrType in ['str', 'int', 'long', 'float', 'bool']:
+                if attrType in ['str', 'int', 'float', 'bool']:
                     attrType = eval(attrType)
                     try:
                         value = attrType(value)
                     except UnicodeEncodeError:
-                        value = unicode(value)
+                        value = str(value)
                     except TypeError:
                         value = value
                     setattr(instance, attr, value)
@@ -276,16 +273,16 @@ class ApiClient(object):
             return string
 
 
-class MethodRequest(urllib2.Request):
+class MethodRequest(Request):
     def __init__(self, *args, **kwargs):
         """Construct a MethodRequest. Usage is the same as for
-        `urllib2.Request` except it also takes an optional `method`
+        `Request` except it also takes an optional `method`
         keyword argument. If supplied, `method` will be used instead of
         the default."""
 
         if 'method' in kwargs:
             self.method = kwargs.pop('method')
-        return urllib2.Request.__init__(self, *args, **kwargs)
+        return Request.__init__(self, *args, **kwargs)
 
     def get_method(self):
-        return getattr(self, 'method', urllib2.Request.get_method(self))
+        return getattr(self, 'method', Request.get_method(self))
