@@ -33,7 +33,7 @@ class {{classname}}(object):
     {{newline}}
     {{#operation}}
     def {{nickname}}(self, {{#requiredParams}}{{paramName}}{{#defaultValue}} = None{{/defaultValue}}, {{/requiredParams}}**kwargs):
-        """{{summary}}
+        r"""{{summary}}
 
         Args:
             {{#allParams}}
@@ -103,7 +103,7 @@ class {{classname}}(object):
         if not response:
             return None
 
-        responseObject = self.apiClient.deserialize(response, '{{returnType}}')
+        responseObject = self.apiClient.deserialize(response, r'{{returnType}}')
         return responseObject
         {{/returnType}}
         {{newline}}
